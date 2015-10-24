@@ -137,4 +137,106 @@ public class LinkedList {
         return list;
     }
     
+    // Returns another list that has the same elements as the current list but in reverse order.
+    public LinkedList reverse() {
+        LinkedList reversed = new LinkedList();
+        Node iter = tail;
+        
+        while (iter != null) {
+            reversed.add(iter.element);
+            iter = iter.left;
+        }
+        
+        return reversed;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        
+        if (obj instanceof LinkedList) {
+            LinkedList other = (LinkedList) obj;
+            Node thisIter = head, otherIter = other.get(0);
+            
+            while (thisIter != null && otherIter != null) {
+                if (thisIter.element != otherIter.element) {
+                    return false;
+                }
+                thisIter = thisIter.right;
+                otherIter = otherIter.right;
+            }
+            
+            // if one of the lists has more elements than the other
+            if (thisIter != null || otherIter != null) {
+                return false;
+            }
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    // Returns true iff the current list is a palindrome.
+    public boolean isPalindrome() {
+        if (head == null) {
+            return true;
+        }
+        
+        Node leftIter = head, rightIter = tail, leftPrev, rightPrev;
+        
+        while (leftIter != rightIter) {
+            if (leftIter.element != rightIter.element) {
+                return false;
+            }
+            
+            leftPrev = leftIter;
+            leftIter = leftIter.right;
+            rightPrev = rightIter;
+            rightIter = rightIter.left;
+            
+            if (leftPrev == rightIter && rightPrev == leftIter) {
+                /**
+                 * when the list has only one element
+                 * or
+                 * when the size of the list is an even number
+                 */
+                return true;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Assume that both the current list and @other are sorted, merges
+     * the current list and @other to produce another sorted list. 
+     * For example, merging {1, 3, 5} with {2, 4, 6} should result in {1, 2, 3, 4, 5, 6}.
+     * If one of the inputs is not sorted, the behaviour is undefined.
+     */
+    public LinkedList sortedMerge(LinkedList other) {        
+        LinkedList merged = new LinkedList();
+        Node lIter = head, rIter = other.get(0);
+        
+        while (lIter != null || rIter != null) {
+            if (lIter == null) {
+                merged.add(rIter.element);
+                rIter = rIter.right;
+            } else if (rIter == null) {
+                merged.add(lIter.element);
+                lIter = lIter.right;
+            } else if (lIter.element <= rIter.element) {
+                merged.add(lIter.element);
+                lIter = lIter.right;
+            } else {
+                merged.add(rIter.element);
+                rIter = rIter.right;
+            }
+        }
+        
+        return merged;
+    }
+    
+    
 }
