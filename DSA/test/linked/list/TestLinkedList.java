@@ -2,7 +2,9 @@ package linked.list;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,7 @@ public class TestLinkedList {
 
     private LinkedList original;
     private final int N = 1000;
+    private Random rand = new Random();
     
     @Before
     public void setUp() {
@@ -137,7 +140,6 @@ public class TestLinkedList {
     
     @Test
     public void testSortedMerge() {
-        Random rand = new Random();
         LinkedList randomLengthSorted = new LinkedList();
         
         for (int i = 0; i < N; ++i) {
@@ -151,6 +153,81 @@ public class TestLinkedList {
         LinkedList merged = original.sortedMerge(randomLengthSorted);
         assertTrue(isSorted(merged));
         assertEquals(original.size() + randomLengthSorted.size(), merged.size());
+    }
+    
+    public static boolean hasDuplicates(LinkedList list) {
+        LinkedList.Node iter = list.get(0);
+        Set<Integer> set = new HashSet<>();
+        
+        while (iter != null) {
+            if (set.contains(iter.element)) {
+                return true;
+            } else {
+                set.add(iter.element);
+            }
+            iter = iter.right;
+        }
+        
+        return false;
+    }
+    
+    @Test
+    public void testHasDuplicates() {
+        assertFalse(hasDuplicates(original));
+        original.add(0);
+        assertTrue(hasDuplicates(original));
+    }
+    
+    @Test
+    public void testRemoveDuplicates() {
+        LinkedList withDuplicates = original.copy();
+        for (int i = 0; i < N; ++i) {
+            if (rand.nextDouble() < 0.5) {
+                withDuplicates.add(i);
+            }
+        }
+        
+        LinkedList noDuplicates = withDuplicates.removeDuplicates();
+        assertFalse(hasDuplicates(original));
+        assertTrue(hasDuplicates(withDuplicates));
+        assertFalse(hasDuplicates(noDuplicates));
+        assertEquals(original.size(), noDuplicates.size());
+    }
+    
+    @Test
+    public void testSplice() {
+        LinkedList list = new LinkedList();
+        list.add(0);
+        list.add(1);
+        list.add(5);
+        list.add(6);
+        
+        LinkedList splicable = new LinkedList();
+        splicable.add(2);
+        splicable.add(3);
+        splicable.add(4);
+        
+        assertEquals(4, list.size());
+        list.splice(splicable, list.get(1), list.get(2));
+        assertEquals(7, list.size());
+        
+        for (int i = 0; i < 7; ++i) {
+            assertEquals(i, list.get(i).element);
+        }
+    }
+    
+    @Test
+    public void testSplitAt() {
+        assertTrue(N > 5);
+        int initialSize = original.size();
+        
+        LinkedList rightSide = original.splitAt(original.get(5));
+        assertEquals(5, original.size());
+        assertEquals(initialSize - 5, rightSide.size());
+        
+        for (int i = 0; i < N - 5; ++i) {
+            assertEquals(5 + i, rightSide.get(i).element);
+        }
     }
     
 }

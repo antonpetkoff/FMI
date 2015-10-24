@@ -1,5 +1,8 @@
 package linked.list;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class LinkedList {
     
@@ -238,5 +241,86 @@ public class LinkedList {
         return merged;
     }
     
+    // Returns a new list that has the same elements as the current one but no duplicates.
+    public LinkedList removeDuplicates() {
+        LinkedList noDuplicates = new LinkedList();
+        Set<Integer> set = new HashSet<>();
+        Node iter = head;
+        
+        while (iter != null) {
+            if (!set.contains(iter.element)) {
+                set.add(iter.element);
+                noDuplicates.add(iter.element);
+            }
+            iter = iter.right;
+        }
+        
+        return noDuplicates;
+    }
+    
+    /**
+     * Inserts all the elements of @other between @start and @end.
+     * It is assumed that @start is the left node of @end and
+     * @end is the right node of @start.
+     * 
+     * @param other     the list which elements are spliced in the calling list
+     * @param start     the left exclusive border of the spliced elements
+     *                  (belongs to the calling list)
+     * @param end       the right exclusive border of the spliced elements
+     *                  (belongs to the calling list)
+     */
+    void splice(LinkedList other, Node start, Node end) {
+        if (other == null) {
+            return;
+        }
+        if (start == null || end == null || start.right != end
+                || end.left != start) {
+            throw new IllegalArgumentException("No splice borders defined!");
+        }
+                
+        Node otherStart = other.get(0);
+        if (otherStart == null) {
+            return;
+        }
+        
+        start.right = otherStart;
+        
+        Node iter = start.right;
+        
+        while (iter != null) {
+            if (iter.right == null) {
+                // connect the end
+                iter.right = end;
+                end.left = iter;
+                break;
+            }
+            iter = iter.right;
+        }
+    }
+    
+    /**
+     * Splits the list at the specified node. The nodes to the left @node
+     * should remain in the current list.
+     * The others are to be returned in another list.
+     * 
+     * @param node      the node at which the list will be splitted
+     * @return          the list with elements right to the @node inclusive
+     */
+    public LinkedList splitAt(Node node) {
+        // remove the right side from the calling list
+        tail = node.left;
+        tail.right = null;
+        
+        // create a new list with the right side elements
+        LinkedList rightSide = new LinkedList();
+        Node iter = node;
+        
+        while (iter != null) {
+            rightSide.add(iter.element);
+            iter = iter.right;
+        }
+        
+        return rightSide;
+    }
     
 }
