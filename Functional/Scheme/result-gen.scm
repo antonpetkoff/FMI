@@ -33,4 +33,4 @@
   (display (string-append expr " = " (number->string sum) ))
 )
 
-(result-gen 0 9 + 3)
+(result-gen -2 9 + 3)
