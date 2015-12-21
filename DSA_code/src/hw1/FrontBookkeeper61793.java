@@ -251,7 +251,7 @@ public class FrontBookkeeper61793 implements IFrontBookkeeper {
             news[i] = strings.get(i);
         }
         
-        System.out.println(book.updateFront(news));
+        System.out.print(book.updateFront(news));
         scanner.close();
     }
 
