@@ -1,0 +1,158 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      4424,        149]
+NotebookOptionsPosition[      3864,        124]
+NotebookOutlinePosition[      4198,        139]
+CellTagsIndexPosition[      4155,        136]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"F", "[", "x_", "]"}], "=", 
+  RowBox[{"1", "-", 
+   RowBox[{"E", "[", 
+    RowBox[{"-", "x"}], "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"RSimpson", "[", 
+   RowBox[{"f_", ",", "n_", ",", "a_", ",", "b_", ",", "ksi_"}], "]"}], "=", 
+  RowBox[{
+   RowBox[{"-", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"b", "-", "a"}], ")"}], "^", "5"}], "/", 
+      RowBox[{"(", 
+       RowBox[{"2880", 
+        RowBox[{"n", "^", "4"}]}], ")"}]}], ")"}]}], "*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Derivative", "[", "4", "]"}], "[", "f", "]"}], "[", "ksi", 
+    "]"}]}]}]}], "Input",
+ CellChangeTimes->{{3.661830111066984*^9, 3.6618301211359367`*^9}, {
+  3.6618301879296494`*^9, 3.661830309335537*^9}, {3.661830347908821*^9, 
+  3.6618303641290627`*^9}, {3.661830407583672*^9, 3.661830407666258*^9}, {
+  3.661830453978973*^9, 3.661830481178952*^9}, {3.661830522213518*^9, 
+  3.661830525575921*^9}, {3.6618306378758287`*^9, 3.6618306767273083`*^9}, {
+  3.6618307951092*^9, 3.661830850625362*^9}}],
+
+Cell[BoxData[
+ RowBox[{"1", "-", 
+  RowBox[{"\[ExponentialE]", "[", 
+   RowBox[{"-", "x"}], "]"}]}]], "Output",
+ CellChangeTimes->{
+  3.661830403299116*^9, {3.6618304548850117`*^9, 3.661830481762991*^9}, 
+   3.661830526857213*^9, {3.6618306567841187`*^9, 3.661830677621111*^9}, {
+   3.661830802533346*^9, 3.661830851322302*^9}}],
+
+Cell[BoxData[
+ RowBox[{"-", 
+  FractionBox[
+   RowBox[{
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "a"}], "+", "b"}], ")"}], "5"], " ", 
+    RowBox[{
+     SuperscriptBox["f", 
+      TagBox[
+       RowBox[{"(", "4", ")"}],
+       Derivative],
+      MultilineFunction->None], "[", "ksi", "]"}]}], 
+   RowBox[{"2880", " ", 
+    SuperscriptBox["n", "4"]}]]}]], "Output",
+ CellChangeTimes->{
+  3.661830403299116*^9, {3.6618304548850117`*^9, 3.661830481762991*^9}, 
+   3.661830526857213*^9, {3.6618306567841187`*^9, 3.661830677621111*^9}, {
+   3.661830802533346*^9, 3.6618308513233833`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RSimpson", "[", 
+  RowBox[{"f", ",", "n", ",", "0", ",", "4", ",", "3"}], "]"}]], "Input",
+ CellChangeTimes->{{3.6618306113719883`*^9, 3.66183062877739*^9}, {
+  3.6618306850919247`*^9, 3.661830690753705*^9}, {3.6618307763375673`*^9, 
+  3.661830790864544*^9}, {3.661830861848548*^9, 3.661830862008479*^9}}],
+
+Cell[BoxData[
+ RowBox[{"-", 
+  FractionBox[
+   RowBox[{"16", " ", 
+    RowBox[{
+     SuperscriptBox["f", 
+      TagBox[
+       RowBox[{"(", "4", ")"}],
+       Derivative],
+      MultilineFunction->None], "[", "3", "]"}]}], 
+   RowBox[{"45", " ", 
+    SuperscriptBox["n", "4"]}]]}]], "Output",
+ CellChangeTimes->{{3.66183078115254*^9, 3.66183086245301*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Reduce", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"2", "\[LessEqual]", "x", "\[LessEqual]", "3"}], "}"}], ",", 
+   RowBox[{"{", "x", "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.661829829222282*^9, 3.661829831709683*^9}, {
+  3.6618300523429413`*^9, 3.661830069753908*^9}}],
+
+Cell[BoxData[
+ RowBox[{"2", "\[LessEqual]", "x", "\[LessEqual]", "3"}]], "Output",
+ CellChangeTimes->{
+  3.661830070400909*^9, {3.6618308190428867`*^9, 3.661830828906958*^9}}]
+}, Open  ]]
+},
+WindowSize->{808, 621},
+WindowMargins->{{212, Automatic}, {36, Automatic}},
+FrontEndVersion->"10.2 for Linux x86 (64-bit) (July 6, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 1074, 28, 77, "Input"],
+Cell[1657, 52, 328, 7, 32, "Output"],
+Cell[1988, 61, 616, 19, 53, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2641, 85, 329, 5, 32, "Input"],
+Cell[2973, 92, 356, 12, 53, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3366, 109, 304, 7, 32, "Input"],
+Cell[3673, 118, 175, 3, 32, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
