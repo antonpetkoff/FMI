@@ -25,6 +25,14 @@ a = (0,0)
 b :: Point
 b = (1,1)
 
+
+
+data Tree = Empty | Node Int Tree Tree deriving Show
+
+maxSumPath :: Tree -> Int
+maxSumPath Empty = 0
+maxSumPath (Node x l r) = x + (max (maxSumPath l) (maxSumPath r))
+
 main = do
     print(count 2 [1,2,2,3,4,2])
     print(remove 2 [1,2,2,3,4,2])
@@ -32,3 +40,4 @@ main = do
     print(maxRepeated [1,1,2,2,2,2,3,2,1,1,1,2])
     print(dist a b)
     print(maxDistance [(-1.1, 1), (1.8, 2), (3, 1), (-1, -2)] dist)
+    print(maxSumPath (Node 2 (Node 10 Empty Empty) (Node 0 Empty Empty)))

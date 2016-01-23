@@ -1,5 +1,6 @@
 module Main where
 
+import System.IO
 import Text.Regex.Posix
 
 data Attribute = Attribute {name :: String, value :: String} deriving Show
@@ -37,9 +38,7 @@ showTree level (Tree tag children attributes) = concat [openingTag, content, clo
         content = unlines $ map (showTree (level + 1)) children
         closingTag = concat ["</", tag, ">"]
 
-
 -- parseAttribute :: String -> Attribute
-
 
 -- parses a leaf node which can be self-closing too
 -- parseLeaf :: String -> Tree
@@ -53,7 +52,44 @@ showTree level (Tree tag children attributes) = concat [openingTag, content, clo
 
 myTag = "<img src=\"madonna.jpg\" encoding=\"UTF-8\"/>"
 
+myAppend :: String -> String -> String
+myAppend tail head = head ++ tail
+
+myTails = ["<a", "<b", "<c", "<d"]
+
+{- mapChildren :: list of children -> XPath selector -> function -> list of children
+a function which takes the children of a node (list)
+takes: list of children, string XPath selector, function
+and returns the same list of children but where for each element
+which is matched with the given XPath selector the given
+function (which can be a partial application) is called with the matched
+child element as an argument
+-}
+-- mapChildren :: [Tree] -> String -> (Tree -> Tree) -> [Tree]
+
+{- create
+
+-}
+-- create :: Tree -> [String] -> Tree
+-- create tree [] = tree
+-- create tree@(Tree tag children attributes) selectors@(head:tail) =
+    -- (Tree tag (mapChildren children head (\t -> create t tail)) attributes)
+
+-- matchString :: String -> Bool
+-- matchString 
+
+getUserLines :: IO String                      -- optional type signature
+getUserLines = go ""
+    where go contents = do
+        line <- getLine
+        if line == "q"
+            then return contents
+            else go (contents ++ line ++ "\n")     -- add a newline
+
 main = do
-    writeFile "output.xml" (showTree 0 tree1)
-    print (myTag =~ "<([a-z]+)(.*)/>" :: [[String]]) 
-    print (getAllTextMatches $ myTag =~ "\\w+=\"[\\w\\s\\.\\-]+\"" :: [String])
+    -- writeFile "output.xml" (showTree 0 tree1)
+    -- print (myTag =~ "<([a-z]+)(.*)/>" :: [[String]]) 
+    -- print (getAllTextMatches $ myTag =~ "\\w+=\"[\\w\\s\\.\\-]+\"" :: [String])
+    -- print (foldr myAppend "head<" myTails)
+    str <- getUserLines
+    putStrLn str
