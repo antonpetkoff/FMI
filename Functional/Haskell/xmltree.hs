@@ -2,21 +2,24 @@ module Main where
 
 import System.IO
 import Text.Regex.Posix
+import Data.List.Split
 
-data Attribute = Attribute {name :: String, value :: String} deriving Show
+data Attribute = Attribute {name :: String, value :: String} deriving (Show, Eq)
 data Tree = Tree {tag :: String, children :: [Tree], attributes :: [Attribute]}
           | Leaf {tag :: String, text :: String, attributes :: [Attribute]} deriving Show
 -- if Leaf has no text, it is a self-closing tag
 -- assert :: Tree always has at least 1 child
 
 attr1 = Attribute "src" "madonna.jpg"
-attr2 = Attribute "encoding" "UTF-8"
+attr2 = Attribute "encoding" "UTF8"
+attr3 = Attribute "encoding" "Windows1251"
 
 leaf1 = Leaf "img" "" [attr1, attr2]
 leaf2 = Leaf "p" "myParagraph" [attr2]
 leaf3 = Leaf "p" "myParagraph2" [attr2]
+leaf4 = Leaf "img" "" [attr1, attr3]
 
-tree1 = Tree "div" [leaf1, leaf2, leaf3] []
+tree1 = Tree "div" [leaf1, leaf2, leaf3, leaf4] []
 
 showAttributes :: [Attribute] -> String
 showAttributes [] = ""
@@ -38,58 +41,61 @@ showTree level (Tree tag children attributes) = concat [openingTag, content, clo
         content = unlines $ map (showTree (level + 1)) children
         closingTag = concat ["</", tag, ">"]
 
--- parseAttribute :: String -> Attribute
-
--- parses a leaf node which can be self-closing too
--- parseLeaf :: String -> Tree
--- parseLeaf line = (Tree tag, text, attributes)
---     where
---         matched = line =~ "<([a-z]+)(.*)/>" :: [[String]]
---         tag = matched !! 0 !! 1
---         attributes = parseAttributes $ words matched !! 0 !! 2
-
--- match
-
-myTag = "<img src=\"madonna.jpg\" encoding=\"UTF-8\"/>"
-
-myAppend :: String -> String -> String
-myAppend tail head = head ++ tail
-
-myTails = ["<a", "<b", "<c", "<d"]
-
-{- mapChildren :: list of children -> XPath selector -> function -> list of children
-a function which takes the children of a node (list)
-takes: list of children, string XPath selector, function
-and returns the same list of children but where for each element
-which is matched with the given XPath selector the given
-function (which can be a partial application) is called with the matched
-child element as an argument
--}
+-- mapChildren :: list of children -> XPath selector -> function -> list of children
 -- mapChildren :: [Tree] -> String -> (Tree -> Tree) -> [Tree]
 
-{- create
-
--}
 -- create :: Tree -> [String] -> Tree
 -- create tree [] = tree
 -- create tree@(Tree tag children attributes) selectors@(head:tail) =
     -- (Tree tag (mapChildren children head (\t -> create t tail)) attributes)
 
--- matchString :: String -> Bool
--- matchString 
+decomposePath :: String -> [String]
+decomposePath path = splitOn "/" path
 
-getUserLines :: IO String                      -- optional type signature
-getUserLines = go ""
-    where go contents = do
-        line <- getLine
-        if line == "q"
-            then return contents
-            else go (contents ++ line ++ "\n")     -- add a newline
+getTagFromPath :: String -> String
+getTagFromPath path = if null match then "" else match !! 0 !! 1
+    where match = (path =~ "^([A-Za-z]+).*") :: [[String]]
+
+-- TODO: somehow the regex doesn't match dashes
+getAttributeFromPath :: String -> Attribute
+getAttributeFromPath path =
+    if null match then (Attribute "" "")
+    else (Attribute name value)
+    where match = (path =~ "^[A-Za-z]+\\(([A-Za-z]+)=\"([A-Za-z0-9 \\!\\@\\.\\-\\_\\{\\}]+)\"\\).*") :: [[String]]
+          name = if null match then "" else match !! 0 !! 1
+          value = if null match then "" else match !! 0 !! 2
+
+getIndexFromPath :: String -> Int
+getIndexFromPath path = if null match then (-1) else (read (match !! 0 !! 1) :: Int)
+    where match = (path =~ ".*\\[([0-9]+)\\].*") :: [[String]]
+
+getAttrValueFromPath :: String -> String
+getAttrValueFromPath path = if null match then "" else match !! 0 !! 1
+    where match = (path =~ ".*\\@(.*)") :: [[String]]
+
+readTree :: Tree -> [String] -> Tree
+readTree root [selector] = filterTree root selector
+readTree root selectors@(headSel:tailSel) = readTree (filterTree root headSel) tailSel
+
+tagEquals :: String -> Tree -> Bool
+tagEquals str tree = str == (tag tree)
+
+attributeEquals :: Attribute -> Tree -> Bool
+attributeEquals attr tree = attr `elem` (attributes tree)
+
+filterTree :: Tree -> String -> Tree
+filterTree tree@(Tree tag children attributes) selector = filteredByIndex
+    where
+        pathTag = getTagFromPath selector
+        pathAttribute = getAttributeFromPath selector
+        pathIndex = getIndexFromPath selector
+        filteredByTag = filter (tagEquals pathTag) children
+        filteredByAttribute = if (Attribute "" "") == pathAttribute then filteredByTag
+            else filter (attributeEquals pathAttribute) filteredByTag
+        filteredByIndex = if (-1) == pathIndex || pathIndex >= length filteredByAttribute then filteredByAttribute !! 0
+            else filteredByAttribute !! pathIndex
 
 main = do
-    -- writeFile "output.xml" (showTree 0 tree1)
-    -- print (myTag =~ "<([a-z]+)(.*)/>" :: [[String]]) 
-    -- print (getAllTextMatches $ myTag =~ "\\w+=\"[\\w\\s\\.\\-]+\"" :: [String])
-    -- print (foldr myAppend "head<" myTails)
-    str <- getUserLines
-    putStrLn str
+    writeFile "output.xml" (showTree 0 tree1)
+
+    print (showLeaf $ readTree tree1 (decomposePath "img(src=\"madonna.jpg\")[1]"))

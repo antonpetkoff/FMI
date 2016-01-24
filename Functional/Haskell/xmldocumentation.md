@@ -41,15 +41,5 @@
 
 Следва описание на операциите, които могат да се извършват над базата данни.
 
-**create path**
-
-
-****
- 
-Paragraphs are separated by a blank line.
-
-Leave 2 spaces at the end of a line to do a  line break
-
-Text attributes *italic*, **bold**, `monospace`, ~~strikethrough~~ .
-
-A [link](http://example.com).
+**read path** - връща XML-дървото, което съответства на подадения път *path*, без странични ефекти
+**create path** - добавя нови XML-тагове според зададения path
