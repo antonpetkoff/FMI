@@ -4,6 +4,8 @@ import System.IO
 import Text.Regex.Posix
 import Data.List.Split
 
+-- TODO: don't parse HTML with regex
+
 data Attribute = Attribute {name :: String, value :: String} deriving (Show, Eq)
 data Tree = Tree {tag :: String, children :: [Tree], attributes :: [Attribute]}
           | Leaf {tag :: String, text :: String, attributes :: [Attribute]} deriving Show
@@ -83,6 +85,7 @@ tagEquals str tree = str == (tag tree)
 attributeEquals :: Attribute -> Tree -> Bool
 attributeEquals attr tree = attr `elem` (attributes tree)
 
+-- TODO: type Selector = String
 filterTree :: Tree -> String -> Tree
 filterTree tree@(Tree tag children attributes) selector = filteredByIndex
     where
