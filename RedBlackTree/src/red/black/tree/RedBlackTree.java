@@ -109,7 +109,23 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     
     @Override
     public void insert(K key, V value) {
-        // TODO Auto-generated method stub
+        // TODO
+    }
+    
+    private void insertNode(Node x, K key) {
+        Node iter = root, parent = null;
+        while (iter != null) {
+            parent = iter;
+            int comp = key.compareTo(iter.key);
+            if (comp < 0) {
+                iter = iter.left;
+            } else if (comp > 0) {
+                iter = iter.right;
+            } else {
+                // TODO: what do we do with equal (repeating) keys?
+            }
+        }
+        // TODO: work in progress
         
     }
 
@@ -121,26 +137,76 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
 
     @Override
     public V get(K key) {
-        // TODO Auto-generated method stub
-        return null;
+        if (key == null) throw new NullPointerException("null keys disallowed!");
+        Node target = findNode(key);
+        return target == null ? null : target.value;
     }
 
     @Override
     public boolean contains(K key) {
-        // TODO Auto-generated method stub
-        return false;
+        return findNode(key) != null;
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        return false;
+        return size == 0;
     }
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
-        return 0;
+        return size;
     }
 
+    boolean isBST() {
+        return isBST(root);
+    }
+    
+    boolean isBST(Node x) {
+        boolean flag = true;
+        if (x.left != null) {
+            flag = flag && x.left.key.compareTo(x.key) <= 0 && isBST(x.left);
+        }
+        if (x.right != null) {
+            flag = flag && x.key.compareTo(x.right.key) <= 0 && isBST(x.right);
+        }
+        return flag;
+    }
+    
+    boolean areRedParentsCorrect() {
+        return areRedParentsCorrect(root);
+    }
+    
+    boolean areRedParentsCorrect(Node x) {
+        boolean flag = true;
+        if (x != null && x.color == RED) {
+            flag = flag && (x.left == null ? true : x.left.color == BLACK && areRedParentsCorrect(x.left))
+                        && (x.right == null ? true : x.right.color == BLACK && areRedParentsCorrect(x.right));
+        }
+        return flag;
+    }
+    
+    boolean areBlackHeightsCorrect() {
+        int blackHeight = 0;
+        Node iter = root;
+        while (iter != null) {
+            if (iter.color == BLACK) ++blackHeight;
+            iter = iter.left;
+        }
+        areBlackHeightsCorrect(root, blackHeight);
+        return false;
+    }
+    
+    boolean areBlackHeightsCorrect(Node x, int height) {
+        if (x == null && height == 0)   return true;
+        if (x.color == BLACK) {
+            --height;
+        }
+        return areBlackHeightsCorrect(x.left, height - 1) && areBlackHeightsCorrect(x.right, height - 1);
+    }
+    
+    boolean isRedBlackTree() {
+        return root == null ? true : 
+            (root.color == BLACK && isBST() && areRedParentsCorrect() && areBlackHeightsCorrect());
+    }
+    
 }
