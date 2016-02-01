@@ -2,7 +2,7 @@ package red.black.tree;
 
 // TODO: Iterable<> 
 // TODO: complementary methods like min, max, floor...
-public interface IRedBlackTree<K extends Comparable<K>, V> {
+public interface IRedBlackTree<K, V> {
 
     void insert(K key, V value);
     
