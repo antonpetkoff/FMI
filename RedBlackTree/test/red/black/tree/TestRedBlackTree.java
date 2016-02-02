@@ -24,20 +24,72 @@ public class TestRedBlackTree {
         }
     }
     
-    
     @Before
     public void setUp() {
         tree = new RedBlackTree<Integer, Integer>();
     }
     
-//    @Test
-//    public void testLeftRotation() {
-//        RedBlackTree<Integer, Integer>.Node x = new RedBlackTree<Integer, Integer>(1, 1, RED);
-//    }
+    @Test
+    public void testLeftRotation() {
+        RedBlackTree<Integer, Integer>.Node x = tree.new Node(), y = tree.new Node(), p = tree.new Node(),
+                alpha = tree.new Node(), beta = tree.new Node(), gamma = tree.new Node();
+        
+        x.p = p;
+        x.left = alpha;
+        alpha.p = x;
+        x.right = y;
+        y.p = x;
+        y.left = beta;
+        beta.p = y;
+        y.right = gamma;
+        gamma.p = y;
+        
+        tree.leftRotate(x);
+        
+        assertTrue(y.p == p);
+        assertTrue(gamma.p == y);
+        assertTrue(y.right == gamma);
+        assertTrue(y.left == x);
+        assertTrue(x.p == y);
+        assertTrue(x.right == beta);
+        assertTrue(beta.p == x);
+        assertTrue(x.left == alpha);
+        assertTrue(alpha.p == x);
+    }
+    
+    @Test
+    public void testRightRotation() {
+        RedBlackTree<Integer, Integer>.Node x = tree.new Node(), y = tree.new Node(), p = tree.new Node(),
+                alpha = tree.new Node(), beta = tree.new Node(), gamma = tree.new Node();
+        
+        // notice that the assignments are the same as the assertions in the test for left rotation
+        y.p = p;
+        gamma.p = y;
+        y.right = gamma;
+        y.left = x;
+        x.p = y;
+        x.right = beta;
+        beta.p = x;
+        x.left = alpha;
+        alpha.p = x;
+        
+        tree.rightRotate(y);
+        
+        // notice that the assertions are the same as the assignments in the test for left rotation
+        assertTrue(x.p == p);
+        assertTrue(x.left == alpha);
+        assertTrue(alpha.p == x);
+        assertTrue(x.right == y);
+        assertTrue(y.p == x);
+        assertTrue(y.left == beta);
+        assertTrue(beta.p == y);
+        assertTrue(y.right == gamma);
+        assertTrue(gamma.p == y);
+    }
     
     @Test
     public void testInsertion() {
-        int iterations = 20000;
+        int iterations = 10000;
         
         Integer[] arr = new Integer[iterations];
         for (int i = 0; i < iterations; ++i) {
@@ -45,24 +97,13 @@ public class TestRedBlackTree {
         }
         shuffle(arr);
 
+        assertTrue(tree.isRedBlackTree());
         for (int i = 0; i < iterations; ++i) {
-            assertTrue(tree.isRedBlackTree());
-//            System.out.println("Now inserting: " + arr[i]);
             tree.insert(arr[i], arr[i]);
-//            tree.printTree();
             assertTrue(tree.isRedBlackTree());
+            assertEquals(arr[i], tree.get(arr[i]));
         }
-//        assertTrue(tree.isRedBlackTree());
-//        tree.insert(7, 7);
-//        tree.printTree();
-//        assertTrue(tree.isRedBlackTree());
-//        tree.insert(0, 0);
-//        tree.printTree();
-//        assertTrue(tree.isRedBlackTree());
-//        tree.insert(1, 1);
-//        assertTrue(tree.isRedBlackTree());
-//        tree.printTree();
-//        assertTrue(tree.isRedBlackTree());
+        assertTrue(tree.isRedBlackTree());
     }
     
 }

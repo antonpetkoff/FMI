@@ -7,8 +7,8 @@ import java.util.List;
 public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K, V> {
  
     // TODO: access modifiers
-    static final boolean RED = true;
-    static final boolean BLACK = false;
+    public static final boolean RED = true;
+    public static final boolean BLACK = false;
     
     public class Node {
         boolean color;
@@ -16,10 +16,31 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         K key;
         V value;
         
+        public Node() {
+            
+        }
+        
         public Node(K key, V value, boolean color) {
             this.key = key;
             this.value = value;
             this.color = color;
+        }
+        
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (this == obj) {
+                return true;
+            }
+            if (obj instanceof RedBlackTree.Node) {
+                @SuppressWarnings("unchecked")
+                Node o = (Node) obj;
+                return key.equals(o.key) && value.equals(o.value) && color == o.color
+                        && left == o.left && right == o.right;
+            }
+            return false;
         }
         
         @Override
@@ -127,13 +148,21 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         // TODO Auto-generated constructor stub
     }
     
+    public Node createNode(K key, V value, boolean color) {
+        return new Node(key, value, color);
+    }
+    
     public void printTree() {
         BstPrinter<K, V> printer = new BstPrinter<K, V>(root);
         printer.printTree();
     }
     
+    public void printNode(Node node) {
+        (new BstPrinter<K, V>(node)).printTree();
+    }
+    
     // precondition: y is x's non-null right child
-    private void leftRotate(Node x) {
+    void leftRotate(Node x) {
         Node y = x.right;
         x.right = y.left;           // 1) make y's left subtree be x's right subtree
         if (y.left != null) {
@@ -152,7 +181,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     }
     
     // precondition: x is y's non-null left child
-    private void rightRotate(Node y) {
+    void rightRotate(Node y) {
         Node x = y.left;
         y.left = x.right;           // 1) make x's right subtree be y's left subtree
         if (x.right != null) {
