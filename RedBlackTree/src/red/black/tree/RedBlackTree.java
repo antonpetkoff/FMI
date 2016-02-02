@@ -1,5 +1,9 @@
 package red.black.tree;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K, V> {
  
     // TODO: access modifiers
@@ -11,6 +15,109 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         Node p, left, right;
         K key;
         V value;
+        
+        public Node(K key, V value, boolean color) {
+            this.key = key;
+            this.value = value;
+            this.color = color;
+        }
+        
+        @Override
+        public String toString() {
+            return "[" + key+ ", " + (color == RED ? "RED" : "BLACK")
+                    + ", " + (p == null ? "null parent" : "has parent") + "]";
+        }
+    }
+    
+    public class BstPrinter<KK extends Comparable<KK>, VV> {
+
+        public RedBlackTree<KK, VV>.Node root;
+        
+        public BstPrinter(RedBlackTree<KK, VV>.Node root) {
+            this.root = root;
+        }
+        
+        public void printTree() {
+            int maxLevel = maxLevel(root);
+            printNodeInternal(Collections.singletonList(root), 1, maxLevel);
+        }
+
+        private void printNodeInternal(List<RedBlackTree<KK, VV>.Node> nodes, int level, int maxLevel) {
+            if (nodes.isEmpty() || isAllElementsNull(nodes))
+                return;
+
+            int floor = maxLevel - level;
+            int endgeLines = (int) Math.pow(2, (Math.max(floor - 1, 0)));
+            int firstSpaces = (int) Math.pow(2, (floor)) - 1;
+            int betweenSpaces = (int) Math.pow(2, (floor + 1)) - 1;
+
+            printWhitespaces(firstSpaces);
+
+            List<RedBlackTree<KK, VV>.Node> newNodes = new ArrayList<RedBlackTree<KK, VV>.Node>();
+            for (RedBlackTree<KK, VV>.Node node : nodes) {
+                if (node != null) {
+                    System.out.print(node.key + (node.color == RED ? "R" : "B"));
+                    newNodes.add(node.left);
+                    newNodes.add(node.right);
+                } else {
+                    newNodes.add(null);
+                    newNodes.add(null);
+                    System.out.print(" ");
+                }
+
+                printWhitespaces(betweenSpaces);
+            }
+            System.out.println("");
+
+            for (int i = 1; i <= endgeLines; i++) {
+                for (int j = 0; j < nodes.size(); j++) {
+                    printWhitespaces(firstSpaces - i);
+                    if (nodes.get(j) == null) {
+                        printWhitespaces(endgeLines + endgeLines + i + 1);
+                        continue;
+                    }
+
+                    if (nodes.get(j).left != null)
+                        System.out.print("/");
+                    else
+                        printWhitespaces(1);
+
+                    printWhitespaces(i + i - 1);
+
+                    if (nodes.get(j).right != null)
+                        System.out.print("\\");
+                    else
+                        printWhitespaces(1);
+
+                    printWhitespaces(endgeLines + endgeLines - i);
+                }
+
+                System.out.println("");
+            }
+
+            printNodeInternal(newNodes, level + 1, maxLevel);
+        }
+
+        private void printWhitespaces(int count) {
+            for (int i = 0; i < count; i++)
+                System.out.print(" ");
+        }
+
+        private int maxLevel(RedBlackTree<KK, VV>.Node node) {
+            if (node == null)
+                return 0;
+
+            return Math.max(maxLevel(node.left), maxLevel(node.right)) + 1;
+        }
+
+        private boolean isAllElementsNull(List<RedBlackTree<KK, VV>.Node> list) {
+            for (Object object : list) {
+                if (object != null)
+                    return false;
+            }
+            return true;
+        }
+
     }
     
     private Node root;
@@ -18,6 +125,11 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     
     public RedBlackTree() {
         // TODO Auto-generated constructor stub
+    }
+    
+    public void printTree() {
+        BstPrinter<K, V> printer = new BstPrinter<K, V>(root);
+        printer.printTree();
     }
     
     // precondition: y is x's non-null right child
@@ -28,12 +140,12 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             y.left.p = x;
         }
         y.p = x.p;                  // 2) make y's parent be x's parent
-        if (y.p == null) {
+        if (x.p == null) {
             root = y;
-        } else if (y == y.p.left) { // y is left child
-            y.p.left = y;
+        } else if (x == x.p.left) { // y is left child
+            x.p.left = y;
         } else {                    // y is right child
-            y.p.right = y;
+            x.p.right = y;
         }
         x.p = y;                    // 3) x and y switch levels
         y.left = x;
@@ -47,12 +159,12 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             x.right.p = y;
         }
         x.p = y.p;                  // 2) make y's parent be x's parent
-        if (x.p == null) {
+        if (y.p == null) {
             root = x;
-        } else if (x == x.p.left) { // x is left child
-            x.p.left = x;
+        } else if (y == y.p.left) { // x is left child
+            y.p.left = x;
         } else {                    // x is right child
-            x.p.right = x;
+            y.p.right = x;
         }
         y.p = x;                    // 3) x and y switch levels
         x.right = y;
@@ -107,16 +219,69 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         return iter;    // the found node or null if not found
     }
     
-    @Override
-    public void insert(K key, V value) {
-        // TODO
+    /**
+     * Balancing procedure which restores the properties of the Red-Black Tree
+     * after insertion.
+     * @param z     The node from which the balancing will start.
+     */
+    private void insertBalanceUp(Node z) {
+        if (z.p == null) {
+            return;
+        }
+
+        Node uncle = null;
+//        printTree();
+        while (z.p != null && z.p.color == RED) {   // while not root and parent is red
+            if (z.p == z.p.p.left) {
+                uncle = z.p.p.right == null ? new Node(null, null, BLACK) : z.p.p.right;
+                if (uncle.color == RED) {   // case 1: flip colors
+                    z.p.color = BLACK;
+                    uncle.color = BLACK;
+                    z.p.p.color = RED;
+                    z = z.p.p;
+                    continue;
+                } else if (z == z.p.right) {    // case 2: transform to case 3
+                    z = z.p;
+                    leftRotate(z);
+                }
+                z.p.color = BLACK;  // case 3
+                z.p.p.color = RED;
+                rightRotate(z.p.p);
+            } else {
+                uncle = z.p.p.left == null ? new Node(null, null, BLACK) : z.p.p.left;
+                if (uncle.color == RED) {   // case 1: flip colors
+                    z.p.color = BLACK;
+                    uncle.color = BLACK;
+                    z.p.p.color = RED;
+                    z = z.p.p;
+                    continue;
+                } else if (z == z.p.left) { // case 2: transform to case 3
+                    z = z.p;
+                    rightRotate(z);
+                }
+                z.p.color = BLACK;  // case 3
+                z.p.p.color = RED;
+                leftRotate(z.p.p);
+            }
+        }
+        root.color = BLACK;
     }
     
-    private void insertNode(Node x, K key) {
+    @Override
+    public void insert(K key, V value) {
+        if (root == null) {
+            root = new Node(key, value, BLACK);
+        } else {
+            insertNode(new Node(key, value, RED));
+        }
+        // TODO: size increment? what about equal elements?
+    }
+    
+    private void insertNode(Node newNode) {
         Node iter = root, parent = null;
         while (iter != null) {
             parent = iter;
-            int comp = key.compareTo(iter.key);
+            int comp = newNode.key.compareTo(iter.key);
             if (comp < 0) {
                 iter = iter.left;
             } else if (comp > 0) {
@@ -125,8 +290,17 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
                 // TODO: what do we do with equal (repeating) keys?
             }
         }
-        // TODO: work in progress
         
+        newNode.p = parent;
+        if (parent == null) {
+            root = newNode;
+        } else if (newNode.key.compareTo(parent.key) < 0) {
+            parent.left = newNode;
+        } else if (newNode.key.compareTo(parent.key) > 0) {
+            parent.right = newNode;
+        }
+        
+        insertBalanceUp(newNode);
     }
 
     @Override
@@ -162,6 +336,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     }
     
     boolean isBST(Node x) {
+        if (x == null) return true;
         boolean flag = true;
         if (x.left != null) {
             flag = flag && x.left.key.compareTo(x.key) <= 0 && isBST(x.left);
@@ -192,16 +367,15 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             if (iter.color == BLACK) ++blackHeight;
             iter = iter.left;
         }
-        areBlackHeightsCorrect(root, blackHeight);
-        return false;
+        return areBlackHeightsCorrect(root, blackHeight);
     }
     
     boolean areBlackHeightsCorrect(Node x, int height) {
-        if (x == null && height == 0)   return true;
+        if (x == null)   return height == 0;
         if (x.color == BLACK) {
             --height;
         }
-        return areBlackHeightsCorrect(x.left, height - 1) && areBlackHeightsCorrect(x.right, height - 1);
+        return areBlackHeightsCorrect(x.left, height) && areBlackHeightsCorrect(x.right, height);
     }
     
     boolean isRedBlackTree() {
