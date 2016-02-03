@@ -9,8 +9,10 @@ import org.junit.Test;
 
 public class TestRedBlackTree {
 
+    static final int ITERS = 10;
     static Random rand = new Random();
     RedBlackTree<Integer, Integer> tree;
+    Integer[] arr;
 
     public static <T> void swap(final T[] array, final int a, final int b) {
         T temp = array[a];
@@ -27,6 +29,12 @@ public class TestRedBlackTree {
     @Before
     public void setUp() {
         tree = new RedBlackTree<Integer, Integer>();
+        
+        arr = new Integer[ITERS];
+        for (int i = 0; i < ITERS; ++i) {
+            arr[i] = i;
+        }
+        shuffle(arr);
     }
     
     @Test
@@ -88,20 +96,60 @@ public class TestRedBlackTree {
     }
     
     @Test
-    public void testInsertion() {
-        int iterations = 10000;
+    public void testTransplant() {
+        // alpha < x < p < beta < y < gamma
+        RedBlackTree<Integer, Integer>.Node x = tree.new Node(), y = tree.new Node(), p = tree.new Node(),
+                alpha = tree.new Node(), beta = tree.new Node(), gamma = tree.new Node();
         
-        Integer[] arr = new Integer[iterations];
-        for (int i = 0; i < iterations; ++i) {
-            arr[i] = i;
-        }
-        shuffle(arr);
-
+        x.p = p;
+        p.left = x;
+        x.left = alpha;
+        alpha.p = x;
+        x.right = y;
+        y.p = x;
+        y.left = beta;
+        beta.p = y;
+        y.right = gamma;
+        gamma.p = y;
+        
+        tree.transplant(x, y);
+        
+        assertTrue(p.left == y);
+        assertTrue(y.p == p);
+        assertTrue(y.left == beta);
+        assertTrue(beta.p == y);
+        assertTrue(y.right == gamma);
+        assertTrue(gamma.p == y);
+    }
+    
+    @Test
+    public void testInsertion() {
         assertTrue(tree.isRedBlackTree());
-        for (int i = 0; i < iterations; ++i) {
+        for (int i = 0; i < ITERS; ++i) {
             tree.insert(arr[i], arr[i]);
             assertTrue(tree.isRedBlackTree());
             assertEquals(arr[i], tree.get(arr[i]));
+        }
+        assertTrue(tree.isRedBlackTree());
+    }
+    
+    @Test
+    public void testRemoval() {
+        // insert elements
+        assertTrue(tree.isRedBlackTree());
+        for (int i = 0; i < ITERS; ++i) {
+            tree.insert(arr[i], arr[i]);
+            assertTrue(tree.isRedBlackTree());
+            assertEquals(arr[i], tree.get(arr[i]));
+        }
+        assertTrue(tree.isRedBlackTree());
+        
+        for (int i = 0; i < ITERS; ++i) {
+            tree.printTree();
+            System.out.println("Now removing: " + arr[i]);
+            tree.remove(arr[i]);
+            assertTrue(tree.isRedBlackTree());
+            assertEquals(null, tree.get(arr[i]));
         }
         assertTrue(tree.isRedBlackTree());
     }

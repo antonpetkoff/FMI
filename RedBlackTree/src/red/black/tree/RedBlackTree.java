@@ -204,7 +204,8 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
      * @param u     the root of the subtree to be replaced
      * @param v     the root of the replacement subtree
      */
-    private void transplant(Node u, Node v) {
+    void transplant(Node u, Node v) {
+        System.out.println(u + ", " + v);
         if (u.p == null) {
             root = v;
         } else if (u == u.p.left) {
@@ -259,7 +260,6 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         }
 
         Node uncle = null;
-//        printTree();
         while (z.p != null && z.p.color == RED) {   // while not root and parent is red
             if (z.p == z.p.p.left) {
                 uncle = z.p.p.right == null ? new Node(null, null, BLACK) : z.p.p.right;
@@ -334,8 +334,127 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
 
     @Override
     public void remove(K key) {
-        // TODO Auto-generated method stub
-        
+        Node target = findNode(key);
+        if (target != null) {
+            removeNode(target);
+            // TODO: handle size
+        }
+    }
+    
+    private void removeNode(Node z) {
+        Node y = z;     // y holds the removed node for now
+        Node x = null;  // x is the node which moves into y's original position
+        boolean y_original_color = y.color;
+        if (z.left == null) {   // if z has no children or only right child
+            x = z.right;
+            transplant(z, z.right);     // TODO: test transplant
+        } else if (z.right == null) {   // if z has only a left child
+            x = z.left;
+            transplant(z, z.left);
+        } else {    // if z has two children
+            // TODO: test the two cases of treeMinimum
+            y = treeMinimum(z.right);   // from here on y is the direct replacement of z
+            y_original_color = y.color; // the color might be different
+            x = y.right;
+            if (y.p == z) { // if z's replacement is its right child (direct successor)
+                x.p = y;    // TODO: x may be a null leaf
+            } else {
+                transplant(y, y.right);
+                y.right = z.right;
+                y.right.p = y;
+            }
+            transplant(z, y);
+            y.left = z.left;
+            y.left.p = y;
+            y.color = z.color;
+        }
+        if (y_original_color == BLACK) {
+            removeBalanceUp(x);
+        }
+    }
+
+    // null leafs are black by definition
+    private boolean isLeftChildBlack(Node x) {
+        if (x == null) {
+            throw new IllegalArgumentException("The passed node is null and can't have children!");
+        }
+        return x.left == null || x.left.color == BLACK;
+    }
+    
+    // null leafs are black by definition
+    private boolean isRightChildBlack(Node x) {
+        if (x == null) {
+            throw new IllegalArgumentException("The passed node is null and can't have children!");
+        }
+        return x.right == null || x.right.color == BLACK;
+    }
+    
+    /**
+     * A precodure which restores the Red-Black properties of the tree after
+     * node removal. The procedure balances the tree from the given node up to the root.
+     * @param x     The node from which to start the balancing.
+     */
+    private void removeBalanceUp(Node x) {
+        // TODO: what do we do when we are passed a null black leaf?
+        Node w = null;  // TODO: rename to sibling of x
+        while (x != root && x.color == BLACK) {
+            if (x == x.p.left) {    // x is a left child
+                w = x.p.right;
+                if (w.color == RED) {   // case 1: x's sibling is red; reduce to cases 2,3 or 4
+                    w.color = BLACK;
+                    x.p.color = RED;
+                    leftRotate(x.p);
+                    w = x.p.right;
+                }
+                
+                // case 2: w and both its children are black: take one black off
+                if (isLeftChildBlack(w) && isRightChildBlack(w)) {
+                    w.color = RED;
+                    x = x.p;
+                } else if (isRightChildBlack(w)) {
+                    // case 3: w is black, w.left is red and w.right is black
+                    w.left.color = BLACK;
+                    w.color = RED;
+                    rightRotate(w);
+                    w = x.p.right;  // fall-through to case 4
+                    
+                    // case 4: w is black and w.right is red
+                    w.color = x.p.color;
+                    x.p.color = BLACK;
+                    w.right.color = BLACK;
+                    leftRotate(x.p);
+                    x = root;       // terminate loop
+                }
+            } else {                // x is a right child
+                w = x.p.left;
+                if (w.color == RED) {   // case 1: x's sibling is red; reduce to cases 2,3 or 4
+                    w.color = BLACK;
+                    x.p.color = RED;
+                    rightRotate(x.p);
+                    w = x.p.left;
+                }
+                
+                // case 2: w and both its children are black: take one black off
+                if (isLeftChildBlack(w) && isRightChildBlack(w)) {
+                    w.color = RED;
+                    x = x.p;
+                } else if (isLeftChildBlack(w)) {
+                    // case 3: w is black, w.left is black and w.right is red
+                    w.right.color = BLACK;
+                    w.color = RED;
+                    leftRotate(w);
+                    w = x.p.left;   // fall-through to case 4
+                    
+                    // case 4: w is black and w.left is red
+                    w.color = x.p.color;
+                    x.p.color = BLACK;
+                    w.left.color = BLACK;
+                    rightRotate(x.p);
+                    x = root;       // terminate loop
+                }
+            }
+        }
+        x.color = BLACK;
     }
 
     @Override
