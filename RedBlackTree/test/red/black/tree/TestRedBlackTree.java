@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class TestRedBlackTree {
 
-    static final int ITERS = 10;
+    static final int ITERS = 10000;
     static Random rand = new Random();
     RedBlackTree<Integer, Integer> tree;
     Integer[] arr;
@@ -128,12 +128,26 @@ public class TestRedBlackTree {
         for (int i = 0; i < ITERS; ++i) {
             tree.insert(arr[i], arr[i]);
             assertTrue(tree.isRedBlackTree());
+//            tree.printTree();
             assertEquals(arr[i], tree.get(arr[i]));
         }
         assertTrue(tree.isRedBlackTree());
     }
     
     @Test
+    public void testSimpleInsertion() {
+        tree.insert(3, 3);
+        assertTrue(tree.isRedBlackTree());
+        tree.printTree();
+        tree.insert(5, 5);
+        assertTrue(tree.isRedBlackTree());
+        tree.printTree();
+        tree.insert(4, 4);
+        assertTrue(tree.isRedBlackTree());
+        tree.printTree();
+    }
+    
+//    @Test
     public void testRemoval() {
         // insert elements
         assertTrue(tree.isRedBlackTree());

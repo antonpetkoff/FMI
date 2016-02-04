@@ -24,6 +24,8 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             this.key = key;
             this.value = value;
             this.color = color;
+            this.left = nil;
+            this.right = nil;
         }
         
         @Override
@@ -63,8 +65,9 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             printNodeInternal(Collections.singletonList(root), 1, maxLevel);
         }
 
+        @SuppressWarnings("unchecked")
         private void printNodeInternal(List<RedBlackTree<KK, VV>.Node> nodes, int level, int maxLevel) {
-            if (nodes.isEmpty() || isAllElementsNull(nodes))
+            if (nodes.isEmpty() || areAllNodesNil(nodes))
                 return;
 
             int floor = maxLevel - level;
@@ -76,13 +79,13 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
 
             List<RedBlackTree<KK, VV>.Node> newNodes = new ArrayList<RedBlackTree<KK, VV>.Node>();
             for (RedBlackTree<KK, VV>.Node node : nodes) {
-                if (node != null) {
+                if (node != nil) {
                     System.out.print(node.key + (node.color == RED ? "R" : "B"));
                     newNodes.add(node.left);
                     newNodes.add(node.right);
                 } else {
-                    newNodes.add(null);
-                    newNodes.add(null);
+                    newNodes.add((RedBlackTree<KK, VV>.Node) nil);
+                    newNodes.add((RedBlackTree<KK, VV>.Node) nil);
                     System.out.print(" ");
                 }
 
@@ -93,19 +96,19 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             for (int i = 1; i <= endgeLines; i++) {
                 for (int j = 0; j < nodes.size(); j++) {
                     printWhitespaces(firstSpaces - i);
-                    if (nodes.get(j) == null) {
+                    if (nodes.get(j) == nil) {
                         printWhitespaces(endgeLines + endgeLines + i + 1);
                         continue;
                     }
 
-                    if (nodes.get(j).left != null)
+                    if (nodes.get(j).left != nil)
                         System.out.print("/");
                     else
                         printWhitespaces(1);
 
                     printWhitespaces(i + i - 1);
 
-                    if (nodes.get(j).right != null)
+                    if (nodes.get(j).right != nil)
                         System.out.print("\\");
                     else
                         printWhitespaces(1);
@@ -125,15 +128,15 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         }
 
         private int maxLevel(RedBlackTree<KK, VV>.Node node) {
-            if (node == null)
+            if (node == nil)
                 return 0;
 
             return Math.max(maxLevel(node.left), maxLevel(node.right)) + 1;
         }
 
-        private boolean isAllElementsNull(List<RedBlackTree<KK, VV>.Node> list) {
-            for (Object object : list) {
-                if (object != null)
+        private boolean areAllNodesNil(List<RedBlackTree<KK, VV>.Node> list) {
+            for (RedBlackTree<KK, VV>.Node node : list) {
+                if (node != nil)
                     return false;
             }
             return true;
@@ -141,11 +144,14 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
 
     }
     
+    private final Node nil;   // acts as a black sentinel, instead of null we use this guard
     private Node root;
     private int size;
     
     public RedBlackTree() {
-        // TODO Auto-generated constructor stub
+        nil = new Node();
+        nil.color = BLACK;
+        root = nil;
     }
     
     public Node createNode(K key, V value, boolean color) {
@@ -165,11 +171,11 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     void leftRotate(Node x) {
         Node y = x.right;
         x.right = y.left;           // 1) make y's left subtree be x's right subtree
-        if (y.left != null) {
+        if (y.left != nil) {
             y.left.p = x;
         }
         y.p = x.p;                  // 2) make y's parent be x's parent
-        if (x.p == null) {
+        if (x.p == nil) {
             root = y;
         } else if (x == x.p.left) { // y is left child
             x.p.left = y;
@@ -184,11 +190,11 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     void rightRotate(Node y) {
         Node x = y.left;
         y.left = x.right;           // 1) make x's right subtree be y's left subtree
-        if (x.right != null) {
+        if (x.right != nil) {
             x.right.p = y;
         }
         x.p = y.p;                  // 2) make y's parent be x's parent
-        if (y.p == null) {
+        if (y.p == nil) {
             root = x;
         } else if (y == y.p.left) { // x is left child
             y.p.left = x;
@@ -205,8 +211,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
      * @param v     the root of the replacement subtree
      */
     void transplant(Node u, Node v) {
-        System.out.println(u + ", " + v);
-        if (u.p == null) {
+        if (u.p == nil) {
             root = v;
         } else if (u == u.p.left) {
             u.p.left = v;
@@ -223,7 +228,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
      */
     private Node treeMinimum(Node x) {
         Node iter = x;
-        while (iter.left != null) {
+        while (iter.left != nil) {
             iter = iter.left;
         }
         return iter;
@@ -236,7 +241,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
      */
     private Node findNode(K key) {
         Node iter = root;
-        while (iter != null && !iter.key.equals(key)) {
+        while (iter != nil && !iter.key.equals(key)) {
             int comp = iter.key.compareTo(key);
             if (comp < 0) {
                 iter = iter.right;
@@ -255,14 +260,10 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
      * @param z     The node from which the balancing will start.
      */
     private void insertBalanceUp(Node z) {
-        if (z.p == null) {
-            return;
-        }
-
         Node uncle = null;
-        while (z.p != null && z.p.color == RED) {   // while not root and parent is red
+        while (z.p.color == RED) {   // while not root and parent is red
             if (z.p == z.p.p.left) {
-                uncle = z.p.p.right == null ? new Node(null, null, BLACK) : z.p.p.right;
+                uncle = z.p.p.right;
                 if (uncle.color == RED) {   // case 1: flip colors
                     z.p.color = BLACK;
                     uncle.color = BLACK;
@@ -277,7 +278,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
                 z.p.p.color = RED;
                 rightRotate(z.p.p);
             } else {
-                uncle = z.p.p.left == null ? new Node(null, null, BLACK) : z.p.p.left;
+                uncle = z.p.p.left;
                 if (uncle.color == RED) {   // case 1: flip colors
                     z.p.color = BLACK;
                     uncle.color = BLACK;
@@ -298,17 +299,13 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     
     @Override
     public void insert(K key, V value) {
-        if (root == null) {
-            root = new Node(key, value, BLACK);
-        } else {
-            insertNode(new Node(key, value, RED));
-        }
+        insertNode(new Node(key, value, RED));
         // TODO: size increment? what about equal elements?
     }
     
     private void insertNode(Node newNode) {
-        Node iter = root, parent = null;
-        while (iter != null) {
+        Node iter = root, parent = nil;
+        while (iter != nil) {
             parent = iter;
             int comp = newNode.key.compareTo(iter.key);
             if (comp < 0) {
@@ -321,7 +318,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         }
         
         newNode.p = parent;
-        if (parent == null) {
+        if (parent == nil) {
             root = newNode;
         } else if (newNode.key.compareTo(parent.key) < 0) {
             parent.left = newNode;
@@ -341,6 +338,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         }
     }
     
+    // TODO: implement with nil sentinel
     private void removeNode(Node z) {
         Node y = z;     // y holds the removed node for now
         Node x = null;  // x is the node which moves into y's original position
@@ -484,12 +482,12 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     }
     
     boolean isBST(Node x) {
-        if (x == null) return true;
+        if (x == nil) return true;
         boolean flag = true;
-        if (x.left != null) {
+        if (x.left != nil) {
             flag = flag && x.left.key.compareTo(x.key) <= 0 && isBST(x.left);
         }
-        if (x.right != null) {
+        if (x.right != nil) {
             flag = flag && x.key.compareTo(x.right.key) <= 0 && isBST(x.right);
         }
         return flag;
@@ -501,9 +499,9 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     
     boolean areRedParentsCorrect(Node x) {
         boolean flag = true;
-        if (x != null && x.color == RED) {
-            flag = flag && (x.left == null ? true : x.left.color == BLACK && areRedParentsCorrect(x.left))
-                        && (x.right == null ? true : x.right.color == BLACK && areRedParentsCorrect(x.right));
+        if (x != nil && x.color == RED) {
+            flag = flag && (x.left.color == BLACK && areRedParentsCorrect(x.left))
+                        && (x.right.color == BLACK && areRedParentsCorrect(x.right));
         }
         return flag;
     }
@@ -511,7 +509,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     boolean areBlackHeightsCorrect() {
         int blackHeight = 0;
         Node iter = root;
-        while (iter != null) {
+        while (iter != nil) {
             if (iter.color == BLACK) ++blackHeight;
             iter = iter.left;
         }
@@ -519,7 +517,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     }
     
     boolean areBlackHeightsCorrect(Node x, int height) {
-        if (x == null)   return height == 0;
+        if (x == nil)   return height == 0;
         if (x.color == BLACK) {
             --height;
         }
@@ -527,7 +525,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     }
     
     boolean isRedBlackTree() {
-        return root == null ? true : 
+        return root == nil ? true :
             (root.color == BLACK && isBST() && areRedParentsCorrect() && areBlackHeightsCorrect());
     }
     
