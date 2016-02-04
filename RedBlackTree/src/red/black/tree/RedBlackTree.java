@@ -343,10 +343,10 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         Node y = z;     // y holds the removed node for now
         Node x = null;  // x is the node which moves into y's original position
         boolean y_original_color = y.color;
-        if (z.left == null) {   // if z has no children or only right child
+        if (z.left == nil) {   // if z has no children or only right child
             x = z.right;
-            transplant(z, z.right);     // TODO: test transplant
-        } else if (z.right == null) {   // if z has only a left child
+            transplant(z, z.right);
+        } else if (z.right == nil) {   // if z has only a left child
             x = z.left;
             transplant(z, z.left);
         } else {    // if z has two children
@@ -355,7 +355,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             y_original_color = y.color; // the color might be different
             x = y.right;
             if (y.p == z) { // if z's replacement is its right child (direct successor)
-                x.p = y;    // TODO: x may be a null leaf
+                x.p = y;    // x may be a null leaf
             } else {
                 transplant(y, y.right);
                 y.right = z.right;
@@ -376,7 +376,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         if (x == null) {
             throw new IllegalArgumentException("The passed node is null and can't have children!");
         }
-        return x.left == null || x.left.color == BLACK;
+        return x.left == nil || x.left.color == BLACK;
     }
     
     // null leafs are black by definition
@@ -384,7 +384,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         if (x == null) {
             throw new IllegalArgumentException("The passed node is null and can't have children!");
         }
-        return x.right == null || x.right.color == BLACK;
+        return x.right == nil || x.right.color == BLACK;
     }
     
     /**
@@ -393,7 +393,6 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
      * @param x     The node from which to start the balancing.
      */
     private void removeBalanceUp(Node x) {
-        // TODO: what do we do when we are passed a null black leaf?
         Node w = null;  // TODO: rename to sibling of x
         while (x != root && x.color == BLACK) {
             if (x == x.p.left) {    // x is a left child
@@ -414,8 +413,8 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
                     w.left.color = BLACK;
                     w.color = RED;
                     rightRotate(w);
-                    w = x.p.right;  // fall-through to case 4
-                    
+                    w = x.p.right;
+                } else {
                     // case 4: w is black and w.right is red
                     w.color = x.p.color;
                     x.p.color = BLACK;
@@ -441,8 +440,8 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
                     w.right.color = BLACK;
                     w.color = RED;
                     leftRotate(w);
-                    w = x.p.left;   // fall-through to case 4
-                    
+                    w = x.p.left;
+                } else {
                     // case 4: w is black and w.left is red
                     w.color = x.p.color;
                     x.p.color = BLACK;

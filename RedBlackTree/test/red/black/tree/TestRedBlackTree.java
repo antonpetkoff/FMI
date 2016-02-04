@@ -128,28 +128,13 @@ public class TestRedBlackTree {
         for (int i = 0; i < ITERS; ++i) {
             tree.insert(arr[i], arr[i]);
             assertTrue(tree.isRedBlackTree());
-//            tree.printTree();
             assertEquals(arr[i], tree.get(arr[i]));
         }
         assertTrue(tree.isRedBlackTree());
     }
     
     @Test
-    public void testSimpleInsertion() {
-        tree.insert(3, 3);
-        assertTrue(tree.isRedBlackTree());
-        tree.printTree();
-        tree.insert(5, 5);
-        assertTrue(tree.isRedBlackTree());
-        tree.printTree();
-        tree.insert(4, 4);
-        assertTrue(tree.isRedBlackTree());
-        tree.printTree();
-    }
-    
-//    @Test
     public void testRemoval() {
-        // insert elements
         assertTrue(tree.isRedBlackTree());
         for (int i = 0; i < ITERS; ++i) {
             tree.insert(arr[i], arr[i]);
@@ -159,8 +144,6 @@ public class TestRedBlackTree {
         assertTrue(tree.isRedBlackTree());
         
         for (int i = 0; i < ITERS; ++i) {
-            tree.printTree();
-            System.out.println("Now removing: " + arr[i]);
             tree.remove(arr[i]);
             assertTrue(tree.isRedBlackTree());
             assertEquals(null, tree.get(arr[i]));
