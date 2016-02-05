@@ -2,9 +2,10 @@ package red.black.tree;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K, V> {
+public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K, V>, Iterable<V> {
  
     // TODO: access modifiers
     public static final boolean RED = true;
@@ -526,6 +527,58 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     boolean isRedBlackTree() {
         return root == nil ? true :
             (root.color == BLACK && isBST() && areRedParentsCorrect() && areBlackHeightsCorrect());
+    }
+    
+    public class RedBlackTreeIterator implements Iterator<V> {
+
+        private Node head;
+        
+        public RedBlackTreeIterator() {
+            head = treeMinimum(root);
+        }
+        
+        @Override
+        public boolean hasNext() {
+            return head != nil;
+        }
+
+        @Override
+        public V next() {
+            V next = head.value;
+            
+            // prepare next value of head
+            if (head.right != nil) {
+                head = treeMinimum(head.right);
+            } else {
+                if (head.p == nil) {    // then head is the root
+                    head = nil; // this happens only when the root has no right subtree
+                } else if (head == head.p.left) {   // head is a left child
+                    head = head.p;
+                } else {                // head is a right child
+                    // get a parent node with a larger key
+                    K key = head.key;
+                    while (head.p != nil) {
+                        int comp = key.compareTo(head.p.key);
+                        head = head.p;
+                        if (comp < 0) {
+                            break;
+                        }
+                    }
+                    if (key.compareTo(head.key) > 0) {  // if we can't find a key larger than the previous
+                        head = nil;
+                    }
+                }
+            }
+            
+            // return last value of head
+            return next;
+        }
+
+    }
+
+    @Override
+    public Iterator<V> iterator() {
+        return new RedBlackTreeIterator();
     }
     
 }

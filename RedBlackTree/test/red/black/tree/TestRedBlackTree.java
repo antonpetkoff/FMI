@@ -122,8 +122,7 @@ public class TestRedBlackTree {
         assertTrue(gamma.p == y);
     }
     
-    @Test
-    public void testInsertion() {
+    public void insertElements() {
         assertTrue(tree.isRedBlackTree());
         for (int i = 0; i < ITERS; ++i) {
             tree.insert(arr[i], arr[i]);
@@ -134,14 +133,13 @@ public class TestRedBlackTree {
     }
     
     @Test
+    public void testInsertion() {
+        insertElements();
+    }
+    
+    @Test
     public void testRemoval() {
-        assertTrue(tree.isRedBlackTree());
-        for (int i = 0; i < ITERS; ++i) {
-            tree.insert(arr[i], arr[i]);
-            assertTrue(tree.isRedBlackTree());
-            assertEquals(arr[i], tree.get(arr[i]));
-        }
-        assertTrue(tree.isRedBlackTree());
+        insertElements();
         
         for (int i = 0; i < ITERS; ++i) {
             tree.remove(arr[i]);
@@ -149,6 +147,16 @@ public class TestRedBlackTree {
             assertEquals(null, tree.get(arr[i]));
         }
         assertTrue(tree.isRedBlackTree());
+    }
+    
+    @Test
+    public void testIterator() {
+        insertElements();
+        int i = 0;
+        for (Integer value : tree) {
+            assertEquals(Integer.valueOf(i), value);
+            ++i;
+        }
     }
     
 }
