@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K, V>, Iterable<V> {
  
-    // TODO: access modifiers
+    // TODO: access modifiers and nested classes
     public static final boolean RED = true;
     public static final boolean BLACK = false;
     
@@ -300,11 +300,10 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     
     @Override
     public void insert(K key, V value) {
-        insertNode(new Node(key, value, RED));
-        // TODO: size increment? what about equal elements?
+        size += insertNode(new Node(key, value, RED)) ? 1 : 0;
     }
     
-    private void insertNode(Node newNode) {
+    private boolean insertNode(Node newNode) {
         Node iter = root, parent = nil;
         while (iter != nil) {
             parent = iter;
@@ -314,7 +313,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             } else if (comp > 0) {
                 iter = iter.right;
             } else {
-                // TODO: what do we do with equal (repeating) keys?
+                return false;   // currently equal elements won't be added
             }
         }
         
@@ -328,18 +327,18 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         }
         
         insertBalanceUp(newNode);
+        return true;
     }
 
     @Override
     public void remove(K key) {
         Node target = findNode(key);
-        if (target != null) {
+        if (target != nil) {
             removeNode(target);
-            // TODO: handle size
+            --size;
         }
     }
     
-    // TODO: implement with nil sentinel
     private void removeNode(Node z) {
         Node y = z;     // y holds the removed node for now
         Node x = null;  // x is the node which moves into y's original position
@@ -394,7 +393,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
      * @param x     The node from which to start the balancing.
      */
     private void removeBalanceUp(Node x) {
-        Node w = null;  // TODO: rename to sibling of x
+        Node w = null;  // w is the sibling of x
         while (x != root && x.color == BLACK) {
             if (x == x.p.left) {    // x is a left child
                 w = x.p.right;
@@ -459,12 +458,12 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
     public V get(K key) {
         if (key == null) throw new NullPointerException("null keys disallowed!");
         Node target = findNode(key);
-        return target == null ? null : target.value;
+        return target == nil ? null : target.value;
     }
 
     @Override
     public boolean contains(K key) {
-        return findNode(key) != null;
+        return findNode(key) != nil;
     }
 
     @Override
@@ -573,7 +572,6 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
             // return last value of head
             return next;
         }
-
     }
 
     @Override
