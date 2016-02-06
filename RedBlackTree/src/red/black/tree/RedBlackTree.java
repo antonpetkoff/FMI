@@ -533,7 +533,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements IRedBlackTree<K
         private Node head;
         
         public RedBlackTreeIterator() {
-            head = treeMinimum(root);
+            head = root == nil ? nil : treeMinimum(root);
         }
         
         @Override

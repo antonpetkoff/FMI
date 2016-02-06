@@ -3,13 +3,14 @@ package red.black.tree;
 import static org.junit.Assert.*;
 
 import java.util.Random;
+import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestRedBlackTree {
 
-    static final int ITERS = 1000;
+    static final int ITERS = 10000;
     static Random rand = new Random();
     RedBlackTree<Integer, Integer> tree;
     Integer[] arr;
@@ -164,6 +165,34 @@ public class TestRedBlackTree {
         }
         assertTrue(tree.isRedBlackTree());
         assertEquals(ITERS, tree.size());
+    }
+    
+    @Test
+    public void testInsertionPerformance() {
+        int iterations = 1_000_000;
+        Integer[] arr = new Integer[iterations];
+        for (int i = 0; i < iterations; ++i) {
+            arr[i] = i;
+        }
+        shuffle(arr);
+        
+        TreeSet<Integer> set = new TreeSet<Integer>();
+        
+        for (int i = 0; i < iterations; ++i) {
+            tree.insert(arr[i], arr[i]);
+//            set.add(arr[i]);
+        }
+    }
+    
+    @Test
+    public void testInsertSorted() {
+        int iterations = 1000000;
+        for (int i = 0; i < iterations; ++i) {
+            tree.insert(i, i);
+//            assertTrue(tree.isRedBlackTree());
+        }
+        assertTrue(tree.isRedBlackTree());
+        
     }
     
 }
