@@ -3,7 +3,7 @@ package red.black.tree;
 import static org.junit.Assert.*;
 
 import java.util.Random;
-import java.util.TreeSet;
+//import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -176,7 +176,7 @@ public class TestRedBlackTree {
         }
         shuffle(arr);
         
-        TreeSet<Integer> set = new TreeSet<Integer>();
+//        TreeSet<Integer> set = new TreeSet<Integer>();
         
         for (int i = 0; i < iterations; ++i) {
             tree.insert(arr[i], arr[i]);
@@ -186,8 +186,7 @@ public class TestRedBlackTree {
     
     @Test
     public void testInsertSorted() {
-        int iterations = 1000000;
-        for (int i = 0; i < iterations; ++i) {
+        for (int i = 0; i < ITERS; ++i) {
             tree.insert(i, i);
 //            assertTrue(tree.isRedBlackTree());
         }
