@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    149662,       2611]
-NotebookOptionsPosition[    148571,       2569]
-NotebookOutlinePosition[    148905,       2584]
-CellTagsIndexPosition[    148862,       2581]
+NotebookDataLength[    149849,       2616]
+NotebookOptionsPosition[    148756,       2574]
+NotebookOutlinePosition[    149091,       2589]
+CellTagsIndexPosition[    149048,       2586]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -2405,9 +2405,14 @@ Cell[BoxData[
        RowBox[{
         RowBox[{"Abs", "[", 
          RowBox[{
-          SubscriptBox["x", "k"], "-", 
-          SubscriptBox["x", 
-           RowBox[{"k", "+", "1"}]]}], "]"}], ">", "eps"}], " ", "&&", " ", 
+          RowBox[{
+           RowBox[{"f", "'"}], "[", 
+           SubscriptBox["x", "k"], "]"}], "-", 
+          RowBox[{
+           RowBox[{"f", "'"}], "[", 
+           SubscriptBox["x", 
+            RowBox[{"k", "+", "1"}]], "]"}]}], "]"}], ">", "eps"}], " ", "&&",
+        " ", 
        RowBox[{"k", "<", "1000"}]}], ",", 
       RowBox[{"(", "\[IndentingNewLine]", 
        RowBox[{
@@ -2473,7 +2478,7 @@ Cell[BoxData[
    3.6676249592164097`*^9, 3.667624960506762*^9}, {3.6676250020157213`*^9, 
    3.667625141440824*^9}, {3.667625348942102*^9, 3.6676253553749323`*^9}, {
    3.667625389899563*^9, 3.667625399226062*^9}, {3.6676254539894733`*^9, 
-   3.6676254639102907`*^9}}],
+   3.6676254639102907`*^9}, {3.668312173974455*^9, 3.6683121905474358`*^9}}],
 
 Cell[CellGroupData[{
 
@@ -2568,7 +2573,7 @@ ButtonFrame->None, ButtonData:>\\\"paclet:ref/$RecursionLimit\\\", ButtonNote \
 }, Open  ]]
 },
 WindowSize->{808, 621},
-WindowMargins->{{202, Automatic}, {-2, Automatic}},
+WindowMargins->{{192, Automatic}, {-10, Automatic}},
 FrontEndVersion->"10.2 for Linux x86 (64-bit) (July 6, 2015)",
 StyleDefinitions->"Default.nb"
 ]
@@ -2596,22 +2601,22 @@ Cell[CellGroupData[{
 Cell[134215, 2238, 364, 10, 55, "Input"],
 Cell[134582, 2250, 7010, 126, 239, "Output"]
 }, Open  ]],
-Cell[141607, 2379, 3864, 96, 385, "Input"],
+Cell[141607, 2379, 4049, 101, 385, "Input"],
 Cell[CellGroupData[{
-Cell[145496, 2479, 171, 4, 32, "Input"],
-Cell[145670, 2485, 316, 6, 32, "Output"]
+Cell[145681, 2484, 171, 4, 32, "Input"],
+Cell[145855, 2490, 316, 6, 32, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[146023, 2496, 572, 16, 32, "Input"],
-Cell[146598, 2514, 386, 7, 32, "Output"]
+Cell[146208, 2501, 572, 16, 32, "Input"],
+Cell[146783, 2519, 386, 7, 32, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[147021, 2526, 278, 7, 32, "Input"],
+Cell[147206, 2531, 278, 7, 32, "Input"],
 Cell[CellGroupData[{
-Cell[147324, 2537, 350, 8, 23, "Print"],
-Cell[147677, 2547, 197, 4, 23, "Print"]
+Cell[147509, 2542, 350, 8, 23, "Print"],
+Cell[147862, 2552, 197, 4, 23, "Print"]
 }, Open  ]],
-Cell[147889, 2554, 666, 12, 50, "Message"]
+Cell[148074, 2559, 666, 12, 50, "Message"]
 }, Open  ]]
 }
 ]
