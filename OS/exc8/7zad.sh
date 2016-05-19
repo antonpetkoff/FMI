@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# $1 is a log file for non-existend file
+# $1 is a log file for non-existent files
 
 if [ $# -eq 0 ]; then exit; fi
 
