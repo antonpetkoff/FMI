@@ -1,6 +1,6 @@
-function task2
+function task21
 a = 2; L = 3; tmax = 10; ymax = 1.5;
-t = 0:tmax/100:tmax;
+t = 0:tmax/500:tmax;
 x = 0:L/100:L;
 
     function y = phi(x)
@@ -26,17 +26,8 @@ for n=1:length(t)
    plot(x, fourier(x, t(n)));
    axis([0, L, -ymax, ymax]);
    M(n) = getframe;
+   grid on;
 end
-movie(M, 2)
-
-% 2.2, remember to set the step in t to be small (e.g. 50)
-% moments = [0, 5, 15];
-% for i=1:length(moments)
-%     subplot(3, 1, i);
-%     plot(x, fourier(x, moments(i)), 'k');
-%     axis([0, L, -ymax, ymax]);
-%     title(['t = ' num2str(moments(i))]);
-%     grid on;
-% end
+movie(M, 2);
 
 end
