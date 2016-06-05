@@ -1,13 +1,10 @@
-function stringfourier1
-a = 2;
-L = 3;
-tmax = 10;
-ymax = 1.5;
+function task2
+a = 2; L = 3; tmax = 10; ymax = 1.5;
 t = 0:tmax/100:tmax;
 x = 0:L/100:L;
 
     function y = phi(x)
-        y = (x.^3 .* (3-x).^3)/9;
+        y = ((x.*(3-x)).^3)/9;
     end
 
     function y = psi(x)
