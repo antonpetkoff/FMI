@@ -23,10 +23,10 @@ x = 0:L/100:L;
     end
 
 for n=1:length(t)
-   plot(x, fourier(x, t(n)));
-   axis([0, L, -ymax, ymax]);
-   M(n) = getframe;
-   grid on;
+    plot(x, fourier(x, t(n)));
+    axis([0, L, -ymax, ymax]);
+    M(n) = getframe;
+    grid on;
 end
 movie(M, 2);
 

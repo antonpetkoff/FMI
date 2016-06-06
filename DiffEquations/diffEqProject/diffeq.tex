@@ -19,6 +19,7 @@
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 \let\frac\dfrac 
+\let\epsilon\varepsilon
 \renewcommand*\contentsname{СЪДЪРЖАНИЕ}
 \newcommand{\me}{\mathrm{e}}
 \newcommand{\mi}{\mathrm{i}}
@@ -140,7 +141,23 @@ y =
 		-\tg c_4 | \tg \tfrac{x}{2} | & \mbox{при } y < 0
 	\end{array}
 \right.
-\]
+\]\newline
+
+\textbf{Поле от прави}
+
+Нека $y' = f(x, y)$ и нека имаме мрежа от точки с координати $(x_k, y_k)$. За да начертаем права, минаваща през точката $(x_k, y_k)$ с ъглов коефициент $s$ използваме уравнението $y-y_0 = s(x - x_0)$, където ъгловият коефициент $s = y'(x_k) = f(x_k, y_k) = \tg\varphi$, а $\varphi$ е ъгълът между правата и абсцисната ос.
+
+Избираме някое $\delta > 0$ такова, че дължината на отсечка от полето от прави е $2\delta$. Нека $\epsilon > 0$ е такова, че $2\epsilon$ е дължината на проекцията на отсечката от полето от прави. Така $\tg\varphi = \frac{\sqrt{\delta^2 - \epsilon^2}}{\epsilon}$. За произволна точка $(x_k, y_m)$ от мрежата от точки ще изразим $\epsilon > 0$:
+
+\[ \epsilon f(x_k, y_m) = \sqrt{\delta^2 - \epsilon^2} \]
+
+\[ \epsilon^2f^2(x_k, y_m) = \delta^2 - \epsilon^2 \]
+
+\[ \epsilon^2 = \frac{\delta^2}{1 + f^2(x_k, y_m)} \]
+
+\[ \epsilon = \frac{\delta}{\sqrt{1 + f^2(x_k, y_m)}} \]
+
+Така двете точки $(x_k-\epsilon, y_m - \epsilon f(x_k, y_m)) , \, (x_k+\epsilon, y_m + \epsilon f(x_k, y_m))$ определят краищата на отсечка от полето от прави.
 
 \subsection{MATLAB  код и получени в командния прозорец резултати при изпълнението му}
 
