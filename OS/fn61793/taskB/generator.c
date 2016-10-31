@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-const int INTEGER_COUNT = (1<<13) / sizeof(uint32_t) + 10;
+const int INTEGER_COUNT = (1<<13) / sizeof(uint32_t);
 
 int main() {
     int fd;
