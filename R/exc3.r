@@ -28,3 +28,9 @@ prop.table(table(Gender, HairColor), 1) * 100 # gives relative frequencies
 
 # now we can make a useful barplot
 barplot(table(HairColor, Gender)) # we can use colors
+
+library("UsingR")
+simple.freqpoly(Height)
+
+hist(Height)
+rug(jitter(Height)) # depends on the previous line
