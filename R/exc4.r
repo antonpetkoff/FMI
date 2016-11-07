@@ -19,7 +19,7 @@ hist(AverageGrade, breaks)
 
 # recap: 2D frequencies
 table(Gender, HairColor) # absolute frequencies
-prop.table(table(Gender, HairColor), 2) # relative frequencies
+prop.table(table(Gender, HairColor), 2) # relative frequencies, proportions table
 # third argument :: what parts of the table should sum to probability of 1  
   # no third argument -> the whole table should sum to 1
   # 3rd argument is 1 -> each row should sum to 1
