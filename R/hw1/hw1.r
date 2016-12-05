@@ -10,7 +10,7 @@ data = pokemons[sampleRows,]
 head(data)
 
 pie(summary(Type1), main = "Type1")
-pie(summary(Type2), mian = "Type2")
+pie(summary(Type2), main = "Type2")
 hist(Attack, xlim = c(1,200))
 boxplot(Defense, horizontal = TRUE, main = "Defense")
 boxplot(Height, horizontal = TRUE, main = "Height")
@@ -25,16 +25,10 @@ type2weights = data[data$Type2 != "",]$Weight
 hist(type2weights, prob=T)
 lines(density(type2weights))
 
-data[data$Type1 == "Normal" | data$Type1 == "Fighting",]
-
 normalOrFighting = data[data$Type1 == "Normal" | data$Type1 == "Fighting",]
-boxplot(normalOrFighting$Height~normalOrFighting$Type1) # TODO: filter zeros
-# table(normalOrFighting$Type1, normalOrFighting$Height)
-# barplot(table(normalOrFighting$Type1, normalOrFighting$Height))
-# scatter.smooth(normalOrFighting$Height, normalOrFighting$Type1)
+boxplot(normalOrFighting$Height~normalOrFighting$Type1)
 
 correlation = cor(Height, Weight)
 correlation
 model = simple.lm(Height, Weight)
 summary(model)
-
