@@ -1,4 +1,6 @@
 
+# theoretical probability = 97! * (100 choose 3) / 100! = 1 / 6 = 1.666667
+
 experiment = function () {
   permutation = sample(100);
   !is.unsorted(match(c(20, 12, 16), permutation));
