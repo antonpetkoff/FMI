@@ -25,8 +25,7 @@ abs(zProb - testProb) <= 1e-14
 # WIP: г) стойността x, така чe P(−1.5 < T <= x) = (55 + W + A)/100 за Т ~ t(33)
 #  P(−1.5 < T <= x) = (55 + 1 + 7)/100 за Т ~ t(33)
 tProb = (55 + 1 + 7)/100
-?pt
-lowerTail = pt(-1.5, 33)
-tQuantile = qt(lowerTail + tProb, 33)
-testProb = pt(tQuantile, 33) - pt(lowerTail, 33)
-
+lowerTailProb = pt(-1.5, 33)
+tQuantile = qt(lowerTailProb + tProb, 33)
+testProb = pt(tQuantile, 33) - pt(-1.5, 33)
+abs(tProb - testProb) <= 1e-14
