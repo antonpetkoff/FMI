@@ -1,23 +1,22 @@
 library(UsingR);
 
 lambda = 1 / 8;
-expectation = 1 / lambda;
 
-cltExp = function (lambda, n) {
-  sample = rexp(n, lambda);
-  (mean(sample) - expectation) * lambda * sqrt(n); 
+sampleMean = function (n, lambda) {
+  mean(rexp(n, lambda)); # mu = sigma = 1 / lambda = 8
 };
 
-observe = function (simulations, sampleSize) {
-  simple.sim(simulations, cltExp, lambda, sampleSize);
+observe = function (sampleSize, simulationCount) {
+  simple.sim(simulationCount, sampleMean, sampleSize, lambda);
 };
 
-observe10 = observe(500, 10);
+observe10 = observe(10, 500);
 hist(observe10);
 qqnorm(observe10);
 qqline(observe10);
+# var(observe10) # =? 1/(sigma * sqrt(n)) = 1 / (8 * sqrt(10))
 
-observe1000 = observe(500, 1000);
+observe1000 = observe(1000, 500);
 hist(observe1000);
 qqnorm(observe1000);
 qqline(observe1000);
