@@ -1,31 +1,32 @@
+W = 1;
+A = 7;
+S = 9;
+D = 3;
 
-#  W ASD
-# 61 793
+# а)
+geomProb = (S + D + 9) / 90;
+a = pgeom((W + 5) - 1, geomProb) - pgeom(min(c(2, A) - 1), geomProb);
 
-# а) P(6 > X >= 2) = P(2 <= X <= 5), X ~ Ge(p = 21/90)
-geomProb = 21 / 90;
-ans1 = pgeom(5, geomProb) - pgeom(1, geomProb);
-ans1;
+# б)
+lambda = D + 1.5;
+b = ppois(W + 4, lambda) - ppois(min(c(3, A)), lambda);
 
-# б) P(min{3, A} < Y ≤ W + 4) за сл. в. Y ~ Po(D + 1.5)
-# P(4 <= Y <= 5), Y ~ Po(4.5)
-lambda = 4.5
-ppois(5, lambda) - ppois(3, lambda)
+# в)
+zProb = (W + A + S + D + 11) / 111;
+zStar = abs(qnorm((1 - zProb) / 2));
+# проверка на коректността на zStar
+testProb = 1 - pnorm(zStar, lower.tail = FALSE) - pnorm(-zStar);
+abs(zProb - testProb) <= 1e-14;
 
-# в) стойността z* така че P(-z* < Z < z*) = (W + A + S + D + 11)/111 за Z ~ N(0, 1)
-# P(-z* < Z < z*) = 0.2792793 за Z ~ N(0, 1)
-# zProb = 0.2792739
-zProb = (1 + 7 + 9 + 3 + 11)/111
-zQuantile = abs(qnorm((1 - zProb) / 2))
+# г)
+midProb = (55 + W + A) / 100;
+lowerTailProb = pt(-1.5, 33);
+x = qt(lowerTailProb + midProb, 33);
+# проверка на коректността на x
+testProb = pt(x, 33) - pt(-1.5, 33);
+abs(midProb - testProb) <= 1e-14; 
 
-# check
-testProb = 1 - pnorm(zQuantile, lower.tail = FALSE) - pnorm(-zQuantile)
-abs(zProb - testProb) <= 1e-14
-
-# WIP: г) стойността x, така чe P(−1.5 < T <= x) = (55 + W + A)/100 за Т ~ t(33)
-#  P(−1.5 < T <= x) = (55 + 1 + 7)/100 за Т ~ t(33)
-tProb = (55 + 1 + 7)/100
-lowerTailProb = pt(-1.5, 33)
-tQuantile = qt(lowerTailProb + tProb, 33)
-testProb = pt(tQuantile, 33) - pt(-1.5, 33)
-abs(tProb - testProb) <= 1e-14
+a
+b
+zStar
+x
