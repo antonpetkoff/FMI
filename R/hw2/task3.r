@@ -1,5 +1,4 @@
-
-# theoretical probability = 97! * (100 choose 3) / 100! = 1 / 6 = 1.666667
+theoreticalProb = factorial(97) * choose(100, 3) / factorial(100);
 
 experiment = function () {
   permutation = sample(100);
