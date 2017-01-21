@@ -28,6 +28,3 @@ hist(e)
 2 * pt(q = 0.681617, df = 14, lower.tail = FALSE)
 
 t.test(blood$Machine, blood$Expert, paired = TRUE)
-
-# task 2
-
