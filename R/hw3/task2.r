@@ -1,25 +1,28 @@
 library(UsingR)
 brightness
 
+# разпределението на извадката изглежда симетрично и наподобява нормалното разпределение
 simple.eda(brightness)
-# the sample seems normal and symmetric to me...
 
-# we don't know the variance, so we use t-test
+# не знаем теоретичната дисперсия, затова използваме t.test
 t.test(brightness, conf.level = 0.93)
 
-# the median and the mean match when the sample is symmetric!
+
+# Допълнителен анализ на данните:
+# понеже разпределението е симетрично, медианата почти съвпада със средното аритметично
 wilcox.test(brightness, conf.int = TRUE, conf.level = 0.93)
 
 # from Wikipedia Skewness#Relationship of mean and median:
 # If the distribution is symmetric, then the mean is equal to the median,
 # and the distribution has zero skewness. If, in addition,
-#the distribution is unimodal, then the mean = median = mode.
+# the distribution is unimodal, then the mean = median = mode.
 
 mode = function(x) {
   ux = unique(x)
   ux[which.max(tabulate(match(x, ux)))]
 }
 
-median(brightness)
-mode(brightness)
-mean(brightness)
+# медианата, модата и средното аритметично са доста близки
+median(brightness) # 8.5
+mode(brightness) # 8.55
+mean(brightness) # 8.417743
