@@ -65,12 +65,52 @@ public class RandomAccessList {
 		}
 	}
 
+	public int get(int index) {
+		if (forest.size() == 0) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		return forestLookUp(index);
+	}
+
+	private int forestLookUp(int index) {
+		Tree tree = forest.get(0);
+		int nextTreeIndex = 1;
+
+		while (index >= tree.size) {
+			index -= tree.size;
+			tree = forest.get(nextTreeIndex);
+			++nextTreeIndex;
+		}
+
+		return treeLookUp(tree.root, tree.size, index);
+	}
+
+	private int treeLookUp(Node root, int size, int index) {
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		if (index == 0) {
+			return root.value;
+		} else {
+			int subTreeSize = size / 2;
+
+			if (index <= subTreeSize) {
+				return treeLookUp(root.left, subTreeSize, index - 1);
+			} else {
+				return treeLookUp(root.right, subTreeSize, index - 1 - subTreeSize);
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 		RandomAccessList ral = new RandomAccessList();
 		ral.cons(1);
 		ral.cons(2);
 		ral.cons(3);
 		System.out.println(ral);
+		System.out.println(ral.get(1));
 	}
 
 }
