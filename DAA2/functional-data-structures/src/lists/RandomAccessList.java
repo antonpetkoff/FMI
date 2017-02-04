@@ -44,7 +44,7 @@ public class RandomAccessList {
 	}
 
 	public static boolean isEmpty(Tree list) {
-		return list == null;
+		return list == empty();
 	}
 
 	public static Tree cons(int value, Tree head) {
@@ -58,6 +58,33 @@ public class RandomAccessList {
 			result = new Tree(combinedRoot, combinedSize, tree2.next);
 		} else {
 			result = new Tree(new Node(value, null, null), 1, head);
+		}
+
+		return result;
+	}
+
+	public static int head(Tree list) {
+		if (isEmpty(list)) {
+			throw new IllegalStateException();
+		}
+
+		return list.root.value;
+	}
+
+	public static Tree tail(Tree list) {
+		if (isEmpty(list)) {
+			throw new IllegalStateException();
+		}
+
+		Tree result = null;
+
+		if (list.size == 1) {	// XXX: list.size is actually listHead.size
+			result = list.next;
+		} else {	// the size of the tree is 3, 7, 15, ..., 2^k - 1 for k > 1
+			int subTreeSize = list.size / 2;
+			Tree tree2 = new Tree(list.root.right, subTreeSize, list.next);
+			Tree tree1 = new Tree(list.root.left, subTreeSize, tree2);
+			result = tree1;
 		}
 
 		return result;
@@ -101,9 +128,10 @@ public class RandomAccessList {
 	}
 
 	public static void main(String[] args) {
-		Tree list = cons(4, cons(3, cons(2, cons(1, empty()))));
+		Tree list = cons(3, cons(2, cons(1, empty())));
 		System.out.println(list);
 		System.out.println(get(list, 0));
+		System.out.println(tail(list));
 	}
 
 }
