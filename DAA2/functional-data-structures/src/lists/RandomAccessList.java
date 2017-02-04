@@ -1,18 +1,16 @@
 package lists;
 
-import java.util.LinkedList;
-
 public class RandomAccessList {
 
-	public class Node {
+	public static class Node {
 		int value;
 		Node left;
 		Node right;
 
-		public Node(int value) {
+		public Node(int value, Node left, Node right) {
 			this.value = value;
-			this.left = null;
-			this.right = null;
+			this.left = left;
+			this.right = right;
 		}
 
 		@Override
@@ -23,70 +21,68 @@ public class RandomAccessList {
 		}
 	}
 
-	public class Tree {
-		int size;
+	public static class Tree {
 		Node root;
+		int size;
+		Tree next;
 
-		public Tree(Node root, int size) {
+		public Tree(Node root, int size, Tree next) {
 			this.root = root;
 			this.size = size;
+			this.next = next;
 		}
 
 		@Override
 		public String toString() {
-			return "{size = " + this.size + ", root = " + this.root + "}";
+			return "{size = " + this.size + ", root = " + this.root + "}"
+				+ (this.next == null ? "" : (", " + this.next.toString()));
 		}
 	}
 
-	LinkedList<Tree> forest;
-
-	public RandomAccessList() {
-		forest = new LinkedList<Tree>();
+	public static Tree empty() {
+		return null;
 	}
 
-	@Override
-	public String toString() {
-		return forest.toString();
+	public static boolean isEmpty(Tree list) {
+		return list == null;
 	}
 
-	public void cons(int value) {
-		if (forest.size() >= 2 && forest.get(0).size == forest.get(1).size) {
-			Tree tree1 = forest.removeFirst();
-			Tree tree2 = forest.removeFirst();
+	public static Tree cons(int value, Tree head) {
+		Tree tree1 = head;
+		Tree tree2 = tree1 != null ? tree1.next : null;
+		Tree result = null;
 
-			Node newRoot = new Node(value);
-			newRoot.left = tree1.root;
-			newRoot.right = tree2.root;
-
-			Tree combined = new Tree(newRoot, tree1.size + tree2.size + 1);
-			forest.addFirst(combined);
+		if (tree1 != null && tree2 != null && tree1.size == tree2.size) {
+			Node combinedRoot = new Node(value, tree1.root, tree2.root);
+			int combinedSize = tree1.size + tree2.size + 1;
+			result = new Tree(combinedRoot, combinedSize, tree2.next);
 		} else {
-			forest.addFirst(new Tree(new Node(value), 1));
+			result = new Tree(new Node(value, null, null), 1, head);
 		}
+
+		return result;
 	}
 
-	public int get(int index) {
-		if (forest.size() == 0) {
+	public static int get(Tree list, int index) {
+		if (isEmpty(list)) {
 			throw new IndexOutOfBoundsException();
 		}
 
-		return forestLookUp(index);
+		return forestLookUp(list, index);
 	}
 
-	private int forestLookUp(int index) {
-		Tree tree = forest.get(0);
-		int nextTreeIndex = 1;
+	private static int forestLookUp(Tree head, int index) {
+		Tree tree = head;
 
 		while (index >= tree.size) {
 			index -= tree.size;
-			tree = forest.get(nextTreeIndex);
-			++nextTreeIndex;
+			tree = tree.next;
 		}
 
 		return treeLookUp(tree.root, tree.size, index);
 	}
 
-	private int treeLookUp(Node root, int size, int index) {
+	private static int treeLookUp(Node root, int size, int index) {
 		if (index < 0 || index >= size) {
 			throw new IndexOutOfBoundsException();
 		}
@@ -105,12 +101,9 @@ public class RandomAccessList {
 	}
 
 	public static void main(String[] args) {
-		RandomAccessList ral = new RandomAccessList();
-		ral.cons(1);
-		ral.cons(2);
-		ral.cons(3);
-		System.out.println(ral);
-		System.out.println(ral.get(1));
+		Tree list = cons(4, cons(3, cons(2, cons(1, empty()))));
+		System.out.println(list);
+		System.out.println(get(list, 0));
 	}
 
 }
