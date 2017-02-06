@@ -1,5 +1,8 @@
 package lists;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class RandomAccessList {
 
     public static class Node implements Cloneable {
@@ -24,6 +27,21 @@ public class RandomAccessList {
         public Node clone() {
             return new Node(this.value, this.left, this.right);
         }
+
+        public List<Integer> toList() {
+            List<Integer> list = new LinkedList<Integer>();
+
+            // pre-order traversal
+            list.add(this.value);
+            if (this.left != null) {
+                list.addAll(this.left.toList());
+            }
+            if (this.right != null) {
+                list.addAll(this.right.toList());
+            }
+
+            return list;
+        }
     }
 
     public static class Tree implements Cloneable {
@@ -46,6 +64,18 @@ public class RandomAccessList {
         @Override
         public Tree clone() {
             return new Tree(this.root, this.size, this.next);
+        }
+
+        public List<Integer> toList() {
+            LinkedList<Integer> list = new LinkedList<Integer>();
+            Tree head = this;
+
+            while (head != null) {
+                list.addAll(head.root.toList());
+                head = head.next;
+            }
+
+            return list;
         }
     }
 
@@ -183,6 +213,18 @@ public class RandomAccessList {
             Node updatedRightSubtree = updateTree(root.right, subTreeSize, index - 1 - subTreeSize, value);
             return new Node(root.value, root.left, updatedRightSubtree);
         }
+    }
+
+    public static int size(Tree list) {
+        Tree head = list;
+        int size = 0;
+
+        while (head != null) {
+            size += head.size;
+            head = head.next;
+        }
+
+        return size;
     }
 
     public static void main(String[] args) {
