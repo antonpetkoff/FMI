@@ -2,7 +2,7 @@ package lists;
 
 public class RandomAccessList {
 
-    public static class Node {
+    public static class Node implements Cloneable {
         int value;
         Node left;
         Node right;
@@ -19,9 +19,14 @@ public class RandomAccessList {
             String right = this.right == null ? "null" : this.right.toString();
             return "(" + left + ", " + this.value + ", " + right + ")";
         }
+
+        @Override
+        public Node clone() {
+            return new Node(this.value, this.left, this.right);
+        }
     }
 
-    public static class Tree {
+    public static class Tree implements Cloneable {
         Node root;
         int size;
         Tree next;
@@ -36,6 +41,11 @@ public class RandomAccessList {
         public String toString() {
             return "{size = " + this.size + ", root = " + this.root + "}"
                     + (this.next == null ? "" : (", " + this.next.toString()));
+        }
+
+        @Override
+        public Tree clone() {
+            return new Tree(this.root, this.size, this.next);
         }
     }
 
@@ -138,13 +148,13 @@ public class RandomAccessList {
     // forest path copying
     private static Tree updateForest(Tree listHead, int index, int value) {
         // create a clone and make all modifications on the clone
-        Tree updatedList = new Tree(listHead.root, listHead.size, listHead.next);  // TODO: listHead.clone()
+        Tree updatedList = listHead.clone();
 
         Tree head = updatedList;    // start forest path copying
 
         while (index >= head.size) {
             index -= head.size;
-            head = head.next = new Tree(head.next.root, head.next.size, head.next.next);    // TODO: head.next.clone()
+            head = head.next = head.next.clone();
         }
 
         // finish forest path copying by starting in-tree path copying
