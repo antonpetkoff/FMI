@@ -34,6 +34,7 @@ public class PersistentVector {
         return vector.size == 0;
     }
 
+    // TODO: closestPowerOfBase(0, 2) under-flows the integer
     public static int closestPowerOfBase(int n, int base) {
         return (int) Math.ceil(Math.log(n) / Math.log(base));
     }
@@ -96,30 +97,42 @@ public class PersistentVector {
         return node;    // we have reached the leaf
     }
 
+    private static boolean isPowerOfBase(int n, int base) {
+        return n == (int) Math.pow(base, closestPowerOfBase(n, base));
+    }
+
     public static PVector conj(PVector vector, int value) {
-        PVector result = new PVector(clone(vector.root, BASE), vector.size + 1);
+        Object[] newRoot = null;
         Object[] pathCopiedLeaf = null;
 
         if (vector.size < BASE) {   // the root is the leaf
-            pathCopiedLeaf = result.root;   // we have already cloned the root
-        } else if (vector.size == closestPowerOfBase(vector.size, BASE)) {  // all leafs are full
-            Object[] newRoot = new Object[32];  // TODO: uniform node creation
+            newRoot = clone(vector.root, BASE);
+            pathCopiedLeaf = newRoot;
+        } else if (isPowerOfBase(vector.size, BASE)) {  // all leafs are full
+            newRoot = new Object[BASE];
             newRoot[0] = vector.root;   // the newRoot adds one more level of depth
-            pathCopiedLeaf = createPathCopiedLeaf(newRoot, result.size, result.size - 1);
+            pathCopiedLeaf = createPathCopiedLeaf(newRoot, vector.size + 1, vector.size);
         } else {    // at least one empty leaf exists
-            pathCopiedLeaf = createPathCopiedLeaf(result.root, result.size, result.size - 1);
+            newRoot = clone(vector.root, BASE);
+            pathCopiedLeaf = createPathCopiedLeaf(newRoot, vector.size + 1, vector.size);
         }
 
         pathCopiedLeaf[vector.size % BASE] = value; // append the new value
-        return result;
+
+        return new PVector(newRoot, vector.size + 1);
     }
 
     public static void main(String[] args) {
-//        System.out.println(closestPowerOfBase(0, 2));
-//        for (int i = 0; i < 60; ++i) {
-//            int rDepth = (int) Math.pow(BASE, getTreeDepth(i) - 1);
-//            System.out.println(i + "\t" + rDepth + "\t depth = " + getTreeDepth(i));
-//        }
-        PVector v = conj(empty(), 1);
+        PVector v1 = conj(empty(), 1);
+        PVector v2 = conj(v1, 2);
+        PVector v3 = conj(v2, 3);
+        PVector v4 = conj(v3, 4);
+        PVector v5 = conj(v4, 5);
+
+        System.out.println(closestPowerOfBase(0, 2));
+        for (int i = 0; i < 60; ++i) {
+            int rDepth = (int) Math.pow(BASE, getTreeDepth(i) - 1);
+            System.out.println(i + "\t" + rDepth + "\t depth = " + getTreeDepth(i));
+        }
     }
 }
