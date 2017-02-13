@@ -2,53 +2,65 @@ package vectors;
 
 public class PersistentVector {
 
-    public static final int BITS = 5;
-    public static final int BRANCHING_FACTOR = (int) Math.pow(2, BITS);
+    public static final int BITS = 1;
+    public static final int BASE = (int) Math.pow(2, BITS); // a.k.a branching factor
 
-    public static class Node implements Cloneable {
-        Object[] pointers;
+    // TODO: maybe use a Java built-in method
+    public Object[] clone(Object[] array, int size) {
+        Object[] copy = new Object[size];
 
-        public Node() {
-            pointers = new Object[BRANCHING_FACTOR];
+        for (int i = 0; i < BASE; ++i) {
+            copy[i] = array[i];
         }
 
-        @Override
-        public Node clone() {
-            Node copy = new Node();
-
-            for (int i = 0; i < BRANCHING_FACTOR; ++i) {
-                copy.pointers[i] = this.pointers[i];
-            }
-
-            return copy;
-        }
+        return copy;
     }
 
     public static class PVector {
-        Node root;
+        Object[] root;
         int size;
 
-        public PVector(Node root, int size) {
+        public PVector(Object[] root, int size) {
             this.root = root;
             this.size = size;
         }
     }
 
     public static PVector empty() {
-        return new PVector(new Node(), 0);
+        return new PVector(new Object[BASE], 0);
     }
 
     public static boolean isEmpty(PVector vector) {
         return vector.size == 0;
     }
 
-    private static Node getLeaf(PVector vector, int index) {
-        // TODO:
-        return null;
+    // how many levels does a tree with `size` leafs have
+    public static int getTreeDepth(int size) {
+        return size == 0 ? -1 : (int) Math.ceil(Math.log(size) / Math.log(BASE));
+    }
+
+    private static Object getLeaf(PVector vector, int index) {
+        Object[] node = vector.root;
+        int mostSignificantPart = (int) Math.pow(BASE, getTreeDepth(vector.size) - 1);
+
+        int branch;
+        for (int chunk = mostSignificantPart; chunk > 1; chunk /= BASE) {
+            branch = (index / chunk) % BASE;
+
+            if (node[branch] == null) {
+                System.out.println("Branch " + branch + " doesn't exist! You must create it!");
+            }
+
+            node = (Object[]) node[branch];
+        }
+
+        return node[index];
     }
 
     public static void main(String[] args) {
-        System.out.println("Hi vector");
+        for (int i = 0; i < 60; ++i) {
+            int rDepth = (int) Math.pow(BASE, getTreeDepth(i) - 1);
+            System.out.println(i + "\t" + rDepth + "\t depth = " + getTreeDepth(i));
+        }
     }
-
 }
