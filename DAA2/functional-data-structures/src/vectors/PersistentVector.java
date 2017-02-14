@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 public class PersistentVector {
 
-    public static final int BITS = 1;
-    public static final int BASE = (int) Math.pow(2, BITS); // a.k.a branching factor
+    public static final int BITS = 5;
+    public static final int BASE = 1 << BITS; // a.k.a branching factor
+    public static final int MASK = BASE - 1;
 
     // TODO: maybe use a Java built-in method
     public static Object[] clone(Object[] array, int size) {
@@ -67,13 +68,13 @@ public class PersistentVector {
 
     private static Object getLeafValue(PVector vector, int index) {
         Object[] node = vector.root;
-        int mostSignificantPart = (int) Math.pow(BASE, getTreeDepth(vector.size) - 1);
+        int shift = BITS * (getTreeDepth(vector.size) - 1);
 
-        for (int chunk = mostSignificantPart; chunk > 1; chunk /= BASE) {
-            node = (Object[]) node[(index / chunk) % BASE];
+        for (int level = shift; level > 0; level -= BITS) {
+            node = (Object[]) node[(index >>> level) & MASK];
         }
 
-        return node[index % BASE];
+        return node[index & MASK];
     }
 
     /**
@@ -93,11 +94,11 @@ public class PersistentVector {
      */
     private static Object[] createPathCopiedLeaf(Object[] root, int leafCount, int index) {
         Object[] node = root;   // only node from the root to the leaf will be cloned/created
-        int mostSignificantPart = (int) Math.pow(BASE, getTreeDepth(leafCount) - 1);
+        int shift = BITS * (getTreeDepth(leafCount) - 1);
         int childBranch;
 
-        for (int chunk = mostSignificantPart; chunk > 1; chunk /= BASE) {
-            childBranch = (index / chunk) % BASE;
+        for (int level = shift; level > 0; level -= BITS) {
+            childBranch = (index >>> level) & MASK;
 
             if (node[childBranch] == null) { // the child is missing and must be created
                 node[childBranch] = new Object[BASE];   // TODO: a more uniform way of creating nodes
@@ -131,7 +132,7 @@ public class PersistentVector {
             pathCopiedLeaf = createPathCopiedLeaf(newRoot, vector.size + 1, vector.size);
         }
 
-        pathCopiedLeaf[vector.size % BASE] = value; // append the new value
+        pathCopiedLeaf[vector.size & MASK] = value; // append the new value
 
         return new PVector(newRoot, vector.size + 1);
     }
@@ -144,7 +145,7 @@ public class PersistentVector {
         Object[] newRoot = clone(vector.root, BASE);
 
         Object[] pathCopiedLeaf = createPathCopiedLeaf(newRoot, vector.size, index);
-        pathCopiedLeaf[index % BASE] = value;
+        pathCopiedLeaf[index & MASK] = value;
 
         return new PVector(newRoot, vector.size);
     }
