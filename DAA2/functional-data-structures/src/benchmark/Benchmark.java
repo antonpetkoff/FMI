@@ -71,6 +71,21 @@ public class Benchmark {
         return System.nanoTime() - start;
     }
 
+    public static long listLinearUpdate(int listSize) {
+        Tree list = RandomAccessList.empty();
+        for (int i = 0; i < listSize; ++i) {
+            list = cons(i, list);
+        }
+
+        long start = System.nanoTime();
+
+        for (int i = 0; i < listSize; ++i) {
+            list = RandomAccessList.update(list, i, i + 1);
+        }
+
+        return System.nanoTime() - start;
+    }
+
     public static long vectorConj(int size) {
         PVector vector = PersistentVector.empty();
         long start = System.nanoTime();
@@ -113,14 +128,51 @@ public class Benchmark {
         return System.nanoTime() - start;
     }
 
+    public static long vectorRandomUpdate(int vectorSize, int updateCount) {
+        PVector vector = PersistentVector.empty();
+        for (int i = 0; i < vectorSize; ++i) {
+            vector = conj(vector, i);
+        }
+        Random rand = new Random();
+
+        long start = System.nanoTime();
+
+        for (int i = 0; i < updateCount; ++i) {
+            vector = PersistentVector.update(vector, rand.nextInt(vectorSize), rand.nextInt(vectorSize));
+        }
+
+        return System.nanoTime() - start;
+    }
+
+    public static long vectorLinearUpdate(int vectorSize) {
+        PVector vector = PersistentVector.empty();
+        for (int i = 0; i < vectorSize; ++i) {
+            vector = conj(vector, i);
+        }
+
+        long start = System.nanoTime();
+
+        for (int i = 0; i < vectorSize; ++i) {
+            vector = PersistentVector.update(vector, i, i + 1);
+        }
+
+        return System.nanoTime() - start;
+    }
+
+
     public static void main(String[] args) {
         System.out.println("listCons: " + listCons((int) 1e+6));
         System.out.println("listRandomAccess: " + listRandomAccess((int) 1e+7, (int) 1e+7));
         System.out.println("listLinearAccess: " + listLinearAccess((int) 1e+7));
         System.out.println("listRandomUpdate: " + listRandomUpdate((int) 1e+6, (int) 1e+6));
+        System.out.println("listLinearUpdate: " + listLinearUpdate((int) 1e+7));
+
+        System.out.println();
 
         System.out.println("vectorConj: " + vectorConj((int) 1e+6));
         System.out.println("vectorRandomAccess: " + vectorRandomAccess((int) 1e+7, (int) 1e+7));
         System.out.println("vectorLinearAccess: " + vectorLinearAccess((int) 1e+7));
+        System.out.println("vectorRandomUpdate: " + vectorRandomUpdate((int) 1e+6, (int) 1e+6));
+        System.out.println("vectorLinearUpdate: " + vectorLinearUpdate((int) 1e+7));
     }
 }
