@@ -5,7 +5,10 @@ import lists.RandomAccessList;
 import lists.RandomAccessList.Tree;
 import vectors.PersistentVector;
 
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import static lists.RandomAccessList.cons;
 import static vectors.PersistentVector.PVector;
@@ -189,22 +192,47 @@ public class Benchmark {
         return System.nanoTime() - start;
     }
 
+    public static ArrayList<Long> repeat(int times, Function<Long, Long> fn) {
+        ArrayList<Long> results = new ArrayList<>(times);
+
+        for (int i = 0; i < times; ++i) {
+            results.add(fn.apply(42L));
+        }
+
+        return results;
+    }
+
+    public static double mean(ArrayList<Long> data) {
+        return data.stream().mapToDouble(a -> a).average().getAsDouble();
+    }
+
+    public static double average(int times, Function<Long, Long> test) {
+        return mean(repeat(times, test));
+    }
+
+    public static void performTest(String title, int times, Function<Long, Long> test) {
+        long nano = (long) average(times, test);
+        double ms = TimeUnit.MILLISECONDS.convert(nano, TimeUnit.NANOSECONDS);
+        System.out.println(title + "\t" + nano + " ns\t" + ms + " ms");
+    }
 
     public static void main(String[] args) {
-        System.out.println("listCons: " + listCons((int) 1e+6));
-        System.out.println("listRandomAccess: " + listRandomAccess((int) 1e+7, (int) 1e+7));
-        System.out.println("listLinearAccess: " + listLinearAccess((int) 1e+7));
-        System.out.println("listRandomUpdate: " + listRandomUpdate((int) 1e+6, (int) 1e+6));
-        System.out.println("listLinearUpdate: " + listLinearUpdate((int) 1e+7));
-        System.out.println("listTail: " + listTail((int) 1e+7));
+        final int TIMES = 1;
+
+        performTest("listCons:\t\t", TIMES, (x) -> listCons((int) 1e+7));
+        performTest("listRandomAccess:", TIMES, (x) -> listRandomAccess((int) 1e+7, (int) 1e+7));
+        performTest("listLinearAccess:", TIMES, (x) -> listLinearAccess((int) 1e+7));
+        performTest("listRandomUpdate:", TIMES, (x) -> listRandomUpdate((int) 1e+6, (int) 1e+7));
+        performTest("listLinearUpdate:", TIMES, (x) -> listLinearUpdate((int) 1e+7));
+        performTest("listTail:\t\t", TIMES, (x) -> listTail((int) 1e+7));
 
         System.out.println();
 
-        System.out.println("vectorConj: " + vectorConj((int) 1e+6));
-        System.out.println("vectorRandomAccess: " + vectorRandomAccess((int) 1e+7, (int) 1e+7));
-        System.out.println("vectorLinearAccess: " + vectorLinearAccess((int) 1e+7));
-        System.out.println("vectorRandomUpdate: " + vectorRandomUpdate((int) 1e+6, (int) 1e+6));
-        System.out.println("vectorLinearUpdate: " + vectorLinearUpdate((int) 1e+7));
-        System.out.println("vectorPop: " + vectorPop((int) 1e+7));
+        performTest("vectorConj:\t\t", TIMES, (x) -> vectorConj((int) 1e+7));
+        performTest("vectorRandomAccess:", TIMES, (x) -> vectorRandomAccess((int) 1e+7, (int) 1e+7));
+        performTest("vectorLinearAccess:", TIMES, (x) -> vectorLinearAccess((int) 1e+7));
+        performTest("vectorRandomUpdate:", TIMES, (x) -> vectorRandomUpdate((int) 1e+6, (int) 1e+7));
+        performTest("vectorLinearUpdate:", TIMES, (x) -> vectorLinearUpdate((int) 1e+7));
+        performTest("vectorPop:\t\t", TIMES, (x) -> vectorPop((int) 1e+7));
     }
 }
