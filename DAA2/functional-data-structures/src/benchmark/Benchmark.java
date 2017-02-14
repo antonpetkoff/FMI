@@ -86,6 +86,21 @@ public class Benchmark {
         return System.nanoTime() - start;
     }
 
+    public static long listTail(int listSize) {
+        Tree list = RandomAccessList.empty();
+        for (int i = 0; i < listSize; ++i) {
+            list = cons(i, list);
+        }
+
+        long start = System.nanoTime();
+
+        for (int i = 0; i < listSize; ++i) {
+            list = RandomAccessList.tail(list);
+        }
+
+        return System.nanoTime() - start;
+    }
+
     public static long vectorConj(int size) {
         PVector vector = PersistentVector.empty();
         long start = System.nanoTime();
@@ -159,6 +174,21 @@ public class Benchmark {
         return System.nanoTime() - start;
     }
 
+    public static long vectorPop(int vectorSize) {
+        PVector vector = PersistentVector.empty();
+        for (int i = 0; i < vectorSize; ++i) {
+            vector = conj(vector, i);
+        }
+
+        long start = System.nanoTime();
+
+        for (int i = 0; i < vectorSize; ++i) {
+            vector = PersistentVector.pop(vector);
+        }
+
+        return System.nanoTime() - start;
+    }
+
 
     public static void main(String[] args) {
         System.out.println("listCons: " + listCons((int) 1e+6));
@@ -166,6 +196,7 @@ public class Benchmark {
         System.out.println("listLinearAccess: " + listLinearAccess((int) 1e+7));
         System.out.println("listRandomUpdate: " + listRandomUpdate((int) 1e+6, (int) 1e+6));
         System.out.println("listLinearUpdate: " + listLinearUpdate((int) 1e+7));
+        System.out.println("listTail: " + listTail((int) 1e+7));
 
         System.out.println();
 
@@ -174,5 +205,6 @@ public class Benchmark {
         System.out.println("vectorLinearAccess: " + vectorLinearAccess((int) 1e+7));
         System.out.println("vectorRandomUpdate: " + vectorRandomUpdate((int) 1e+6, (int) 1e+6));
         System.out.println("vectorLinearUpdate: " + vectorLinearUpdate((int) 1e+7));
+        System.out.println("vectorPop: " + vectorPop((int) 1e+7));
     }
 }
