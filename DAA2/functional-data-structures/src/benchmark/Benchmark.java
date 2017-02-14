@@ -212,27 +212,31 @@ public class Benchmark {
 
     public static void performTest(String title, int times, Function<Long, Long> test) {
         long nano = (long) average(times, test);
-        double ms = TimeUnit.MILLISECONDS.convert(nano, TimeUnit.NANOSECONDS);
-        System.out.println(title + "\t" + nano + " ns\t" + ms + " ms");
+        long ms = TimeUnit.MILLISECONDS.convert(nano, TimeUnit.NANOSECONDS);
+        System.out.println(title + "\t" + ms + " ms");
     }
 
     public static void main(String[] args) {
-        final int TIMES = 1;
+        final int TIMES = 10;
+        final int SIZE = (int) 1e+7;
 
-        performTest("listCons:\t\t", TIMES, (x) -> listCons((int) 1e+7));
-        performTest("listRandomAccess:", TIMES, (x) -> listRandomAccess((int) 1e+7, (int) 1e+7));
-        performTest("listLinearAccess:", TIMES, (x) -> listLinearAccess((int) 1e+7));
-        performTest("listRandomUpdate:", TIMES, (x) -> listRandomUpdate((int) 1e+6, (int) 1e+7));
-        performTest("listLinearUpdate:", TIMES, (x) -> listLinearUpdate((int) 1e+7));
-        performTest("listTail:\t\t", TIMES, (x) -> listTail((int) 1e+7));
+        System.out.println("structure size = " + SIZE);
+        System.out.println("each test is averaged after " + TIMES + " repetitions\n");
+
+        performTest("listCons:\t\t", TIMES, (x) -> listCons(SIZE));
+        performTest("listRandomAccess:", TIMES, (x) -> listRandomAccess(SIZE, SIZE));
+        performTest("listLinearAccess:", TIMES, (x) -> listLinearAccess(SIZE));
+        performTest("listRandomUpdate:", TIMES, (x) -> listRandomUpdate(SIZE, SIZE));
+        performTest("listLinearUpdate:", TIMES, (x) -> listLinearUpdate(SIZE));
+        performTest("listTail:\t\t", TIMES, (x) -> listTail(SIZE));
 
         System.out.println();
 
-        performTest("vectorConj:\t\t", TIMES, (x) -> vectorConj((int) 1e+7));
-        performTest("vectorRandomAccess:", TIMES, (x) -> vectorRandomAccess((int) 1e+7, (int) 1e+7));
-        performTest("vectorLinearAccess:", TIMES, (x) -> vectorLinearAccess((int) 1e+7));
-        performTest("vectorRandomUpdate:", TIMES, (x) -> vectorRandomUpdate((int) 1e+6, (int) 1e+7));
-        performTest("vectorLinearUpdate:", TIMES, (x) -> vectorLinearUpdate((int) 1e+7));
-        performTest("vectorPop:\t\t", TIMES, (x) -> vectorPop((int) 1e+7));
+        performTest("vectorConj:\t\t", TIMES, (x) -> vectorConj(SIZE));
+        performTest("vectorRandomAccess:", TIMES, (x) -> vectorRandomAccess(SIZE, SIZE));
+        performTest("vectorLinearAccess:", TIMES, (x) -> vectorLinearAccess(SIZE));
+        performTest("vectorRandomUpdate:", TIMES, (x) -> vectorRandomUpdate(SIZE, SIZE));
+        performTest("vectorLinearUpdate:", TIMES, (x) -> vectorLinearUpdate(SIZE));
+        performTest("vectorPop:\t\t", TIMES, (x) -> vectorPop(SIZE));
     }
 }
