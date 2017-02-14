@@ -1,5 +1,7 @@
 package vectors;
 
+import java.util.ArrayList;
+
 public class PersistentVector {
 
     public static final int BITS = 1;
@@ -24,6 +26,17 @@ public class PersistentVector {
             this.root = root;
             this.size = size;
         }
+
+        @Override
+        public String toString() {
+            ArrayList<Integer> list = new ArrayList<>(this.size);
+
+            for (int i = 0; i < this.size; ++i) {
+                list.add(get(this, i));
+            }
+
+            return list.toString();
+        }
     }
 
     public static PVector empty() {
@@ -35,12 +48,12 @@ public class PersistentVector {
     }
 
     // TODO: closestPowerOfBase(0, 2) under-flows the integer
-    public static int closestPowerOfBase(int n, int base) {
+    private static int closestPowerOfBase(int n, int base) {
         return (int) Math.ceil(Math.log(n) / Math.log(base));
     }
 
     // how many levels does a tree with `size` leafs have
-    public static int getTreeDepth(int size) {
+    private static int getTreeDepth(int size) {
         return size == 0 ? -1 : closestPowerOfBase(size, BASE);
     }
 
@@ -131,5 +144,6 @@ public class PersistentVector {
         PVector v5 = conj(v4, 5);
 
         System.out.println(get(v5, 4));
+        System.out.println(v5);
     }
 }
