@@ -55,4 +55,28 @@ public class PersistentVectorTest {
             assertEquals((int) list.get(index), get(vector, index));
         }
     }
+
+    @Test
+    public void testPop() {
+        final int SIZE = 1000;
+        PVector vector = empty();
+        LinkedList<Integer> list = new LinkedList<>();
+
+        for (int i = 0; i < SIZE; ++i) {
+            vector = conj(vector, i);
+            list.add(i);
+            assertEquals(list.size(), vector.size);
+        }
+
+        for (int i = 0; i < SIZE; ++i) {
+            vector = pop(vector);
+            list.removeLast();
+
+            assertEquals(list.size(), vector.size);
+
+            for (int j = 0; j < list.size(); ++j) {
+                assertEquals((int) list.get(j), get(vector, j));
+            }
+        }
+    }
 }
