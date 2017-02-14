@@ -136,6 +136,19 @@ public class PersistentVector {
         return new PVector(newRoot, vector.size + 1);
     }
 
+    public static PVector update(PVector vector, int index, int value) {
+        if (index >= vector.size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        Object[] newRoot = clone(vector.root, BASE);
+
+        Object[] pathCopiedLeaf = createPathCopiedLeaf(newRoot, vector.size, index);
+        pathCopiedLeaf[index % BASE] = value;
+
+        return new PVector(newRoot, vector.size);
+    }
+
     public static void main(String[] args) {
         PVector v1 = conj(empty(), 1);
         PVector v2 = conj(v1, 2);

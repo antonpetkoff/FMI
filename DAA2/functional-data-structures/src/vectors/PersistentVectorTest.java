@@ -2,7 +2,11 @@ package vectors;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.LinkedList;
+import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static vectors.PersistentVector.*;
 
 public class PersistentVectorTest {
@@ -26,4 +30,29 @@ public class PersistentVectorTest {
         }
     }
 
+    @Test
+    public void testUpdate() {
+        final int SIZE = 1000;
+        PVector vector = empty();
+        LinkedList<Integer> list = new LinkedList<>();
+
+        for (int i = 0; i < SIZE; ++i) {
+            vector = conj(vector, i);
+            list.add(i);
+            assertEquals(list.size(), vector.size);
+        }
+
+        Random rand = new Random();
+
+        int index, value;
+        for (int i = 0; i < SIZE; ++i) {
+            index = rand.nextInt(SIZE);
+            value = rand.nextInt(SIZE);
+
+            vector = update(vector, index, value);
+            list.set(index, value);
+
+            assertEquals((int) list.get(index), get(vector, index));
+        }
+    }
 }
