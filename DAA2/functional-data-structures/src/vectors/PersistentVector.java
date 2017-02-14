@@ -44,22 +44,23 @@ public class PersistentVector {
         return size == 0 ? -1 : closestPowerOfBase(size, BASE);
     }
 
-    private static Object getLeaf(PVector vector, int index) {
+    public static int get(PVector vector, int index) {
+        if (index >= vector.size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        return (int) getLeafValue(vector, index);
+    }
+
+    private static Object getLeafValue(PVector vector, int index) {
         Object[] node = vector.root;
         int mostSignificantPart = (int) Math.pow(BASE, getTreeDepth(vector.size) - 1);
 
-        int branch;
         for (int chunk = mostSignificantPart; chunk > 1; chunk /= BASE) {
-            branch = (index / chunk) % BASE;
-
-            if (node[branch] == null) {
-                System.out.println("Branch " + branch + " doesn't exist! You must create it!");
-            }
-
-            node = (Object[]) node[branch];
+            node = (Object[]) node[(index / chunk) % BASE];
         }
 
-        return node[index];
+        return node[index % BASE];
     }
 
     /**
@@ -129,10 +130,6 @@ public class PersistentVector {
         PVector v4 = conj(v3, 4);
         PVector v5 = conj(v4, 5);
 
-        System.out.println(closestPowerOfBase(0, 2));
-        for (int i = 0; i < 60; ++i) {
-            int rDepth = (int) Math.pow(BASE, getTreeDepth(i) - 1);
-            System.out.println(i + "\t" + rDepth + "\t depth = " + getTreeDepth(i));
-        }
+        System.out.println(get(v5, 4));
     }
 }
